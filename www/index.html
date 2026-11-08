@@ -76,12 +76,44 @@ button{transition:background .25s}
 .rise{animation:rise .35s ease-out}
 @keyframes rise{from{transform:translateY(26px);opacity:0}}
 @media (prefers-reduced-motion:reduce){.ghost,.rise{animation:none}.ghost{display:none}}
+
+.agepanel{display:none;flex:1;min-height:0;overflow-y:auto;flex-direction:column;gap:14px;padding:14px 18px calc(16px + env(safe-area-inset-bottom,0px))}
+.agemode .agepanel{display:flex}
+.agemode .disp,.agemode .pad{display:none}
+.ahead{display:flex;align-items:center;gap:10px}
+.aback{width:46px;height:46px;border-radius:14px;padding:0;display:flex;align-items:center;justify-content:center;flex:none}
+.atabs{flex:1;display:flex;background:var(--key);border-radius:14px;padding:4px}
+.atabs button{flex:1;background:transparent;font-size:16px;padding:10px 6px;border-radius:10px;color:var(--dim)}
+.atabs button.on{background:var(--acc);color:#fff}
+.af{display:flex;flex-direction:column;gap:6px;font-size:15px;color:var(--dim)}
+.ain{display:flex;gap:8px}
+.af input{flex:1;min-width:0;height:48px;border:0;border-radius:14px;background:var(--key);color:var(--txt);font-size:18px;padding:0 14px;font-family:inherit}
+.atoday{font-size:16px;padding:0 18px;border-radius:14px;color:var(--acc)}
+.ares{background:var(--panel);border-radius:20px;padding:18px}
+.abig{font-size:28px;font-weight:500;line-height:1.25;margin-bottom:8px}
+.arow{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:17px}
+.arow span:first-child{color:var(--dim);flex:none}
+.arow span:last-child{text-align:right}
+.aerr{color:var(--acc);font-size:16px}
+
+.dt{display:flex;gap:8px;flex:1;min-width:0}
+.dt select,.dt input{height:48px;border:0;border-radius:14px;background:var(--key);color:var(--txt);font-size:18px;padding:0 8px;font-family:inherit;min-width:0}
+.dt .dd{flex:0 0 21%}
+.dt .mm{flex:1 1 auto}
+.dt .yy{flex:0 0 28%}
+.aact{display:flex;gap:10px;margin-top:14px}
+.aact button{flex:1;font-size:17px;padding:12px 0;border-radius:14px}
+.aact button:last-child{background:var(--acc);color:#fff}
+
+.dt select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%239a9ba0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;background-size:12px 8px;padding:0 34px 0 14px;text-overflow:ellipsis}
+.alr{display:flex;justify-content:space-between;align-items:center}
+.alr .atoday{padding:6px 18px;font-size:15px}
 </style>
 </head>
 <body>
-<div class="app">
+<div class="app" id="app">
   <div class="disp" id="disp">
-    <div class="top"><div class="mem" id="mem"></div><button class="hbtn" id="sbtn" aria-label="সেটিংস"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><button class="hbtn" id="hbtn" aria-label="হিস্ট্রি"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></button></div>
+    <div class="top"><div class="mem" id="mem"></div><button class="hbtn" id="abtn" aria-label="বয়স"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></button><button class="hbtn" id="sbtn" aria-label="সেটিংস"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><button class="hbtn" id="hbtn" aria-label="হিস্ট্রি"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></button></div>
     <div class="hist" id="hist" hidden></div>
     <div class="sub" id="sub"></div>
     <div class="main" id="main">0</div>
@@ -102,6 +134,7 @@ button{transition:background .25s}
 <div class="row"><span>ভলিউম</span><input type="range" id="s_vol" min="5" max="100" step="5"></div>
 <label><span>কম্পন</span><input type="checkbox" id="s_vib"></label>
 <label><span>কি চাপলে রঙের ঝলক</span><input type="checkbox" id="s_flash"></label>
+<label><span>বাংলা সংখ্যা (১২৩)</span><input type="checkbox" id="s_bn"></label>
 <div class="row"><span>থিম</span><div><button data-th="dark">ডার্ক</button><button data-th="light">লাইট</button></div></div>
 <div class="row"><span>রং</span><div class="sw" id="sw"></div></div>
 <button class="done" id="s_close">ঠিক আছে</button>
@@ -118,6 +151,7 @@ function fmtExpr(e){return e.replace(/\d+\.?\d*|\.\d+/g,fmtNum).replace(/([+×÷
 function fmtVal(n){if(!isFinite(n))return "ত্রুটি";var s=String(parseFloat(n.toPrecision(12)));if(/e/.test(s))return s;return fmtNum(s).replace("-","−")}
 function evalExpr(e){
   var t=e.replace(/×/g,"*").replace(/÷/g,"/").replace(/−/g,"-");
+  var pm;while((pm=/([+\-])(\d+\.?\d*|\.\d+)%/.exec(t))){var L=t.slice(0,pm.index);t=t.slice(0,pm.index)+pm[1]+(L?"(("+L+")*"+pm[2]+"/100)":"("+pm[2]+"/100)")+t.slice(pm.index+pm[0].length)}
   t=t.replace(/(\d+\.?\d*|\.\d+|\))%/g,"($1/100)");
   t=t.replace(/[+\-*\/.(]+$/,"");
   if(!t||!/^[\d+\-*\/.()\s]+$/.test(t))return null;
@@ -193,11 +227,11 @@ document.getElementById("hist").addEventListener("click",function(e){
 });
 document.getElementById("pad").addEventListener("click",function(e){var b=e.target.closest("button");if(b){fb(b);if(b.dataset.k==="C")swipeAway();press(b.dataset.k)}});
 render();
-var S={snd:true,st:"click",vol:60,vib:true,flash:true,th:"dark",acc:"#f5900a"},ACCS=["#f5900a","#3a9bff","#2ecc71","#e84a8a","#f1c40f","#9b6bff"],actx=null;
+var S={bn:false,snd:true,st:"click",vol:60,vib:true,flash:true,th:"dark",acc:"#f5900a"},ACCS=["#f5900a","#3a9bff","#2ecc71","#e84a8a","#f1c40f","#9b6bff"],actx=null;
 try{Object.assign(S,JSON.parse(load("calc_set")||"{}"))}catch(e){}
 function $(i){return document.getElementById(i)}
 function applySet(){var r=document.documentElement;r.setAttribute("data-theme",S.th);r.style.setProperty("--acc",S.acc);save("calc_set",JSON.stringify(S));
- $("s_snd").checked=S.snd;$("s_vib").checked=S.vib;$("s_flash").checked=S.flash;$("s_vol").value=S.vol;document.querySelectorAll("[data-st]").forEach(function(b){b.classList.toggle("on",b.dataset.st===S.st)});
+ $("s_snd").checked=S.snd;$("s_vib").checked=S.vib;$("s_flash").checked=S.flash;$("s_vol").value=S.vol;$("s_bn").checked=S.bn;document.querySelectorAll("[data-st]").forEach(function(b){b.classList.toggle("on",b.dataset.st===S.st)});
  document.querySelectorAll("[data-th]").forEach(function(b){b.classList.toggle("on",b.dataset.th===S.th)});
  document.querySelectorAll("[data-c]").forEach(function(b){b.classList.toggle("on",b.dataset.c===S.acc)})}
 ACCS.forEach(function(c){var b=document.createElement("button");b.dataset.c=c;b.style.background=c;$("sw").appendChild(b)});
@@ -206,7 +240,7 @@ $("sheet").addEventListener("click",function(e){var t=e.target;
  if(t.id==="sheet"||t.id==="s_close")$("sheet").hidden=true;
  var th=t.closest("[data-th]"),c=t.closest("[data-c]"),st=t.closest("[data-st]");if(st){S.st=st.dataset.st;applySet();if(S.snd)beep()}
  if(th){S.th=th.dataset.th;applySet()}if(c){S.acc=c.dataset.c;applySet()}});
-$("sheet").addEventListener("change",function(){S.snd=$("s_snd").checked;S.vib=$("s_vib").checked;S.flash=$("s_flash").checked;S.vol=+$("s_vol").value;applySet();if(S.snd)beep()});
+$("sheet").addEventListener("change",function(){S.snd=$("s_snd").checked;S.vib=$("s_vib").checked;S.flash=$("s_flash").checked;S.vol=+$("s_vol").value;S.bn=$("s_bn").checked;applySet();applyBn();if(S.snd)beep()});
 applySet();
 function beep(){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();var t=actx.currentTime,o=actx.createOscillator(),g=actx.createGain(),T=S.st,v=Math.max(0.001,S.vol/100*0.35)*(T==="click"?0.5:1),d=T==="tick"?0.02:T==="pop"?0.07:0.04;
  o.type=T==="click"?"square":"sine";
@@ -248,11 +282,119 @@ mainEl.addEventListener("pointermove",function(e){if(Math.abs(e.clientX-lx)>8||M
 mainEl.addEventListener("contextmenu",function(e){e.preventDefault()});
 document.addEventListener("pointerdown",function(e){if(!pop.hidden&&!e.target.closest("#pop"))pop.hidden=true},true);
 pop.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;pop.hidden=true;
- if(b.dataset.p==="copy"){var t=mainEl.textContent.replace(/,/g,"").replace("−","-");copyText(t).then(function(ok){toast(ok?"কপি হয়েছে":"কপি করা যায়নি")})}
+ if(b.dataset.p==="copy"){var t=toEn(mainEl.textContent).replace(/,/g,"").replace("−","-");copyText(t).then(function(ok){toast(ok?"কপি হয়েছে":"কপি করা যায়নি")})}
  else if(navigator.clipboard&&navigator.clipboard.readText){navigator.clipboard.readText().then(pasteNum,askPaste)}
  else askPaste();
 });
 document.addEventListener("paste",function(e){var t=(e.clipboardData||window.clipboardData).getData("text");if(t)pasteNum(t)});
+
+var MN=["জানুয়ারি","ফেব্রুয়ারি","মার্চ","এপ্রিল","মে","জুন","জুলাই","আগস্ট","সেপ্টেম্বর","অক্টোবর","নভেম্বর","ডিসেম্বর"],am="age",WD=["রবিবার","সোমবার","মঙ্গলবার","বুধবার","বৃহস্পতিবার","শুক্রবার","শনিবার"];
+(function(){var p=document.createElement("div");p.className="agepanel";p.id="age";
+p.innerHTML='<div class="ahead"><button class="aback" id="aback" aria-label="ক্যালকুলেটর"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><div class="atabs"><button data-am="age" class="on">বয়স</button><button data-am="diff">তারিখের ব্যবধান</button></div></div>'+
+'<div class="af"><span id="l1">জন্মতারিখ</span>'+dtHtml("d1")+'</div>'+
+'<div class="af"><div class="alr"><span id="l2">কোন তারিখ পর্যন্ত</span><button class="atoday" id="atoday">আজ</button></div>'+dtHtml("d2")+'</div>'+
+'<div class="ares" id="ares"></div>';
+$("app").appendChild(p)})();
+function dim(y,m){return new Date(y,m,0).getDate()}
+function dn(a){return Math.round(Date.UTC(a.y,a.m-1,a.d)/864e5)}
+function addM(a,n){var t=a.m-1+n,y=a.y+Math.floor(t/12),m=((t%12)+12)%12+1;return{y:y,m:m,d:Math.min(a.d,dim(y,m))}}
+function pd(s){var p=s.split("-");return{y:+p[0],m:+p[1],d:+p[2]}}
+function tstr(){var t=new Date();return t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0")}
+function arow(l,x){return '<div class="arow"><span>'+l+'</span><span>'+x+'</span></div>'}
+function ageCalc(){
+  var r=$("ares"),v1=$("d1").value,v2=$("d2").value;
+  if(!v1||!v2){r.innerHTML='<div class="aerr">দুটো তারিখই ঠিকভাবে দিন (দিন, মাস ও ৪ অঙ্কের সাল)</div>';return}
+  var a=pd(v1),b=pd(v2);
+  if(dn(a)>dn(b)){if(am==="diff"){var sw=a;a=b;b=sw}else{r.innerHTML='<div class="aerr">জন্মতারিখ শেষ তারিখের আগে হতে হবে</div>';return}}
+  var mo=(b.y-a.y)*12+(b.m-a.m);if(b.d<a.d)mo--;
+  var an=addM(a,mo);if(dn(an)>dn(b)){mo--;an=addM(a,mo)}
+  var days=dn(b)-dn(a),yy=Math.floor(mo/12),mm=mo%12,dd=dn(b)-dn(an);
+  var h='<div class="abig">'+yy+' বছর '+mm+' মাস '+dd+' দিন</div>'+arow("মোট মাস",fmtNum(String(mo)))+arow("মোট সপ্তাহ",fmtNum(String(Math.floor(days/7)))+" সপ্তাহ "+(days%7)+" দিন")+arow("মোট দিন",fmtNum(String(days)))+arow("মোট ঘণ্টা",fmtNum(String(days*24)));
+  if(am==="age"){
+    h+=arow("জন্মবার",WD[new Date(a.y,a.m-1,a.d).getDay()]);
+    var ny=b.y,nx={y:ny,m:a.m,d:Math.min(a.d,dim(ny,a.m))};
+    if(dn(nx)<dn(b)){ny++;nx={y:ny,m:a.m,d:Math.min(a.d,dim(ny,a.m))}}
+    var left=dn(nx)-dn(b);
+    h+=arow("পরের জন্মদিন",left===0?"আজই! 🎉 ("+(ny-a.y)+" বছর পূর্ণ)":left+" দিন বাকি ("+WD[new Date(nx.y,nx.m-1,nx.d).getDay()]+", "+(ny-a.y)+" বছর পূর্ণ হবে)");
+  }
+  h+='<div class="aact"><button data-act="copy">কপি</button><button data-act="share">শেয়ার</button></div>';r.innerHTML=h;
+}
+function setMode(m){
+  am=m;document.querySelectorAll("[data-am]").forEach(function(b){b.classList.toggle("on",b.dataset.am===m)});
+  $("l1").textContent=m==="age"?"জন্মতারিখ":"শুরুর তারিখ";
+  $("l2").textContent=m==="age"?"কোন তারিখ পর্যন্ত":"শেষ তারিখ";
+  if(m==="age"){var b=load("calc_birth");if(b)$("d1").value=b}
+  ageCalc();
+}
+$("abtn").addEventListener("click",function(){
+  $("app").classList.add("agemode");
+  if(!$("d2").value)$("d2").value=tstr();
+  var b=load("calc_birth");if(b&&!$("d1").value)$("d1").value=b;
+  ageCalc();
+});
+$("aback").addEventListener("click",function(){$("app").classList.remove("agemode")});
+$("age").addEventListener("click",function(e){
+  var t=e.target.closest("[data-am]");if(t)setMode(t.dataset.am);
+  if(e.target.id==="atoday"){$("d2").value=tstr();ageCalc()}
+});
+["input","change"].forEach(function(ev){$("age").addEventListener(ev,function(e){
+  if(e.target.closest("#d1")&&am==="age"&&$("d1").value)save("calc_birth",$("d1").value);
+  if(e.target.closest(".dt"))ageCalc();
+})});
+
+function dtHtml(id){var d='<option value="">দিন</option>',m='<option value="">মাস</option>';
+ for(var i=1;i<=31;i++)d+='<option value="'+i+'">'+i+'</option>';
+ MN.forEach(function(n,i){m+='<option value="'+(i+1)+'">'+n+'</option>'});
+ var y='<option value="">সাল</option>';for(var yr=new Date().getFullYear()+10;yr>=1900;yr--)y+='<option value="'+yr+'">'+yr+'</option>';
+ return '<div class="dt" id="'+id+'"><select class="dd">'+d+'</select><select class="mm">'+m+'</select><select class="yy">'+y+'</select></div>'}
+function toEn(s){return String(s).replace(/[০-৯]/g,function(c){return BN.indexOf(c)})}
+function conv(s){return S.bn?String(s).replace(/[0-9]/g,function(c){return BN[+c]}):String(s)}
+function dtGet(el){var d=+el.querySelector(".dd").value,m=+el.querySelector(".mm").value,ys=toEn(el.querySelector(".yy").value).replace(/\D/g,""),y=+ys;
+ if(!d||!m||ys.length!==4||y<1000)return "";if(d>dim(y,m))return "";
+ return y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0")}
+function dtSet(el,v){var dd=el.querySelector(".dd"),mm=el.querySelector(".mm"),yy=el.querySelector(".yy");
+ if(!v){dd.value="";mm.value="";yy.value="";return}
+ var p=pd(v);dd.value=String(p.d);mm.value=String(p.m);yy.value=String(p.y)}
+function dtLabel(id){var v=$(id).value;if(!v)return "";var p=pd(v);return p.d+" "+MN[p.m-1]+" "+p.y}
+["d1","d2"].forEach(function(id){var el=$(id);Object.defineProperty(el,"value",{get:function(){return dtGet(el)},set:function(v){dtSet(el,v)},configurable:true})});
+function bnConv(el){if(!S.bn||!el)return;var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),n;
+ while(n=w.nextNode()){n.nodeValue=n.nodeValue.replace(/[0-9]/g,function(c){return BN[+c]})}}
+var _rn=render;render=function(){_rn();if(S.bn){bnConv($("mem"));bnConv($("sub"));bnConv($("main"))}fit()};
+var _rh=renderHist;renderHist=function(){_rh();bnConv($("hist"))};
+var _ac=ageCalc;ageCalc=function(){_ac();bnConv($("ares"))};
+function applyBn(){
+ document.querySelectorAll("#pad button").forEach(function(b){var k=b.dataset.k;if(/^\d$/.test(k))b.textContent=S.bn?BN[+k]:k});
+ document.querySelectorAll(".dd option,.yy option").forEach(function(o){if(o.value)o.textContent=S.bn?o.value.replace(/\d/g,function(c){return BN[+c]}):o.value});
+ render();if(histOpen)renderHist();ageCalc();
+}
+function ageTextOut(){var r=$("ares"),big=r.querySelector(".abig");if(!big)return "";
+ var L=[(am==="age"?"জন্মতারিখ: ":"শুরু: ")+conv(dtLabel("d1")),(am==="age"?"হিসাব করা তারিখ: ":"শেষ: ")+conv(dtLabel("d2")),big.textContent];
+ r.querySelectorAll(".arow").forEach(function(x){var s=x.querySelectorAll("span");L.push(s[0].textContent+": "+s[1].textContent)});
+ return L.join("\n")}
+function shareText(t){
+ var cp=window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.Share;
+ if(cp&&cp.share){cp.share({text:t}).catch(function(){});return}
+ if(navigator.share){navigator.share({text:t}).catch(function(){});return}
+ copyText(t).then(function(ok){toast(ok?"কপি হয়েছে, এখন যেখানে খুশি পেস্ট করুন":"শেয়ার করা যায়নি")})}
+$("age").addEventListener("click",function(e){var b=e.target.closest("[data-act]");if(!b)return;var t=ageTextOut();if(!t)return;
+ if(b.dataset.act==="copy")copyText(t).then(function(ok){toast(ok?"কপি হয়েছে":"কপি করা যায়নি")});else shareText(t)});
+applyBn();
+
+var layers=[],skipPop=0;
+function syncLayers(){
+ var op={sheet:!$("sheet").hidden,hist:histOpen,age:$("app").classList.contains("agemode")};
+ layers=layers.filter(function(n){if(op[n])return true;try{skipPop++;history.back()}catch(e){skipPop--}return false});
+ Object.keys(op).forEach(function(n){if(op[n]&&layers.indexOf(n)<0){layers.push(n);try{history.pushState({c:1},"")}catch(e){}}});
+}
+document.addEventListener("click",function(){setTimeout(syncLayers,0)});
+window.addEventListener("popstate",function(){
+ if(skipPop>0){skipPop--;return}
+ var n=layers.pop();if(!n)return;
+ pop.hidden=true;
+ if(n==="sheet")$("sheet").hidden=true;
+ else if(n==="hist"){if(histOpen)toggleHist()}
+ else if(n==="age")$("app").classList.remove("agemode");
+});
 </script>
 </body>
 </html>

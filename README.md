@@ -6,3 +6,6 @@
    .github আপলোড না হলে: Add file → Create new file → নাম দিন `.github/workflows/build-apk.yml` → build-apk-workflow.txt ফাইলের লেখা পেস্ট করে Commit করুন।
 4. Actions ট্যাবে বিল্ড চলবে (৫-১০ মিনিট)।
 5. শেষ হলে ডানদিকে Releases থেকে app-debug.apk ডাউনলোড করে ইনস্টল করুন।
+
+## স্থায়ী সাইনিং কী
+`signing/debug.keystore` ফাইলটি রিপোজিটরিতে থাকতে হবে। এতে এরপর থেকে নতুন APK পুরনোটার ওপরেই আপডেট হিসেবে ইনস্টল হবে।
