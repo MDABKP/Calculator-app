@@ -20,6 +20,10 @@ jobs:
       - run: npm install
       - run: npx cap add android
       - run: npx capacitor-assets generate --android --iconBackgroundColor '#16171a' --iconBackgroundColorDark '#16171a' --splashBackgroundColor '#16171a' --splashBackgroundColorDark '#16171a'
+      - name: Install custom icons
+        run: |
+          find android/app/src/main/res -name 'ic_launcher*.webp' -delete
+          cp -r icons/res/* android/app/src/main/res/
       - name: Tweak colors and orientation
         run: |
           sed -i 's/#3F51B5/#16171A/g; s/#303F9F/#16171A/g' android/app/src/main/res/values/colors.xml || true
