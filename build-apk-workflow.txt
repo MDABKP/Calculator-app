@@ -29,6 +29,13 @@ jobs:
           sed -i 's/#3F51B5/#16171A/g; s/#303F9F/#16171A/g' android/app/src/main/res/values/colors.xml || true
           sed -i 's/android:configChanges/android:screenOrientation="portrait" android:configChanges/' android/app/src/main/AndroidManifest.xml || true
       - run: npx cap sync android
+      - name: Set version
+        run: |
+          VER=$(grep -o 'APP_VERSION="[0-9.]*"' www/index.html | head -1 | cut -d'"' -f2)
+          VER=${VER:-1.0}
+          echo "Version $VER build ${{ github.run_number }}"
+          sed -i 's/versionCode [0-9]*/versionCode ${{ github.run_number }}/' android/app/build.gradle
+          sed -i "s/versionName \"[^\"]*\"/versionName \"$VER\"/" android/app/build.gradle
       - name: Use permanent signing key
         run: |
           mkdir -p ~/.android
