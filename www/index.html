@@ -34,18 +34,18 @@ button:focus-visible{outline:2px solid var(--acc);outline-offset:-3px}
 .hbtn.on{color:var(--acc)}
 .hist{flex:1;min-height:0;overflow-y:auto;margin:4px -22px 6px;scrollbar-width:none;touch-action:pan-y}
 .hist::-webkit-scrollbar{display:none}
-.hw{position:relative;min-height:100%}
+.hw{position:relative}
 .hw::before{content:"";position:absolute;left:36px;top:0;bottom:0;width:2px;background:var(--acc)}
 .ent{position:relative;padding:8px 22px 10px;border-bottom:1px solid #3d3e43;cursor:pointer}
 .hrow{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--dim);text-transform:uppercase}
 .hrow .t{font-weight:400;opacity:.7}
 .ic{display:flex;background:var(--panel);color:var(--acc);border-radius:50%}
 .ic svg{width:30px;height:30px}
-.hr{text-align:right;font-size:30px;color:var(--acc);word-break:break-all;margin:-4px 0 0 42px}
+.hr{text-align:right;font-size:30px;color:var(--acc);word-break:break-all;margin:4px 0 0 42px}
 .he{text-align:right;font-size:20px;color:var(--dim);word-break:break-all;margin-left:42px}
 .hempty{padding:30px;text-align:center;color:var(--dim)}
 .hclr{display:block;margin:12px auto 8px;position:relative;background:var(--panel);color:var(--dim);font-size:15px;padding:6px 14px;border-radius:12px;border:1px solid #4a4b50}
-.disp.open .sub{display:none}
+
 :root{--m:#313236;--line:#3d3e43}
 html[data-theme=light]{--bg:#eceef2;--panel:#fff;--key:#fff;--txt:#17181b;--dim:#6b6d74;--m:#e3e5ea;--line:#d6d8de;color-scheme:light}
 .hbtn{font-size:24px}
@@ -67,9 +67,9 @@ button{transition:background .25s}
 .pop button{font-size:16px;padding:10px 18px;background:transparent;border-radius:12px}
 .toast{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:rgba(0,0,0,.8);color:#fff;padding:8px 16px;border-radius:20px;font-size:15px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:30}
 .toast.show{opacity:1}
-.sub{border-bottom:1px solid rgba(128,128,128,.55)}
+.sep{height:1px;flex:none;background:rgba(128,128,128,.55)}
 .main{padding-top:6px}
-.disp.open .main{border-top:1px solid rgba(128,128,128,.55)}
+
 .card input[type=range]{width:55%;height:auto}
 .ghost{position:fixed;z-index:12;pointer-events:none;text-align:right;white-space:nowrap;overflow:hidden;box-sizing:border-box;animation:flyup .45s ease-in forwards}
 @keyframes flyup{to{transform:translateY(-120px);opacity:0}}
@@ -108,12 +108,46 @@ button{transition:background .25s}
 .dt select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%239a9ba0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;background-size:12px 8px;padding:0 34px 0 14px;text-overflow:ellipsis}
 .alr{display:flex;justify-content:space-between;align-items:center}
 .alr .atoday{padding:6px 18px;font-size:15px}
+
+.main{--fw:44px}.sub{--fw:30px}
+.main.fl,.sub.fl{-webkit-mask-image:linear-gradient(to right,transparent 0,#000 var(--fw));mask-image:linear-gradient(to right,transparent 0,#000 var(--fw))}
+.main.fr,.sub.fr{-webkit-mask-image:linear-gradient(to left,transparent 0,#000 var(--fw));mask-image:linear-gradient(to left,transparent 0,#000 var(--fw))}
+.main.fl.fr,.sub.fl.fr{-webkit-mask-image:linear-gradient(to right,transparent 0,#000 var(--fw),#000 calc(100% - var(--fw)),transparent 100%);mask-image:linear-gradient(to right,transparent 0,#000 var(--fw),#000 calc(100% - var(--fw)),transparent 100%)}
+
+#abtn,#sbtn,#hbtn{display:none}
+.disp{touch-action:pan-x}
+.pad{transition:height .35s ease,padding .35s ease}
+.hopen .pad{height:0;padding-top:0;padding-bottom:0;overflow:hidden;visibility:hidden;transition:height .35s ease,padding .35s ease,visibility 0s .35s}
+.hist:not([hidden]){animation:hin .35s ease-out}
+@keyframes hin{from{opacity:0;transform:translateY(-36px)}}
+.hist.hout{animation:hout .26s ease-in forwards}
+@keyframes hout{to{opacity:0;transform:translateY(-60px)}}
+@media (prefers-reduced-motion:reduce){.hist,.hist.hout{animation:none}.pad{transition:none}}
+.hhandle{display:flex;height:46px;margin-bottom:-12px;flex:none;align-items:center;justify-content:center;color:var(--dim);cursor:pointer}
+.disp.open .hhandle{display:flex}
+.hdel{margin-left:auto;background:transparent;color:#ff6b5e;font-size:12.5px;line-height:1.2;padding:3px 9px;border-radius:9px;font-weight:500;text-transform:none;border:1px solid rgba(255,107,94,.45)}
+.hrow{position:relative}
+.menu{position:fixed;z-index:16;background:var(--key);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.5);min-width:220px;overflow:hidden}
+.menu[hidden],.undo[hidden]{display:none}
+.menu button{display:block;width:100%;text-align:left;font-size:17px;padding:15px 18px;background:transparent;border-radius:0}
+.menu button+button{border-top:1px solid var(--line)}
+#emenu{flex-direction:column;min-width:190px}
+#emenu button{text-align:left;font-size:17px;padding:13px 18px}
+#emenu button[data-e=del]{color:#ff6b5e}
+.undo{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:31;display:flex;align-items:center;gap:8px;background:#26272b;color:#fff;border-radius:26px;padding:6px 8px 6px 18px;font-size:15px;width:max-content;max-width:92vw;box-shadow:0 4px 16px rgba(0,0,0,.5)}
+.undo button{font-size:15px;padding:9px 14px;background:transparent;color:var(--acc);font-weight:600;border-radius:18px}
+
+.hhandle svg{transform:rotate(180deg);transition:transform .3s ease}
+.hopen .hhandle svg{transform:none}
+.hhandle{width:100%}
+.menu button{display:flex;align-items:center;gap:14px}
+.menu svg{width:21px;height:21px;flex:none;color:var(--dim)}
 </style>
 </head>
 <body>
 <div class="app" id="app">
   <div class="disp" id="disp">
-    <div class="top"><div class="mem" id="mem"></div><button class="hbtn" id="abtn" aria-label="বয়স"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></button><button class="hbtn" id="sbtn" aria-label="সেটিংস"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><button class="hbtn" id="hbtn" aria-label="হিস্ট্রি"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></button></div>
+    <div class="top"><div class="mem" id="mem"></div><button class="hbtn" id="mbtn" aria-label="মেনু"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><button class="hbtn" id="abtn" aria-label="বয়স"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></button><button class="hbtn" id="sbtn" aria-label="সেটিংস"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><button class="hbtn" id="hbtn" aria-label="হিস্ট্রি"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></button></div>
     <div class="hist" id="hist" hidden></div>
     <div class="sub" id="sub"></div>
     <div class="main" id="main">0</div>
@@ -153,6 +187,7 @@ function evalExpr(e){
   var t=e.replace(/×/g,"*").replace(/÷/g,"/").replace(/−/g,"-");
   var pm;while((pm=/([+\-])(\d+\.?\d*|\.\d+)%/.exec(t))){var L=t.slice(0,pm.index);t=t.slice(0,pm.index)+pm[1]+(L?"(("+L+")*"+pm[2]+"/100)":"("+pm[2]+"/100)")+t.slice(pm.index+pm[0].length)}
   t=t.replace(/(\d+\.?\d*|\.\d+|\))%/g,"($1/100)");
+  t=t.replace(/(^|[^\d.])0+(?=\d)/g,"$1");
   t=t.replace(/[+\-*\/.(]+$/,"");
   if(!t||!/^[\d+\-*\/.()\s]+$/.test(t))return null;
   try{var v=Function('"use strict";return ('+t+')')();return typeof v==="number"?v:null}catch(err){return null}
@@ -173,11 +208,11 @@ function render(){
 }
 function fitEl(el,max,min){var size=max;el.style.fontSize=size+"px";
   while(el.scrollWidth>el.clientWidth&&size>min){size-=1;el.style.fontSize=size+"px"}}
-function fit(){var m=document.getElementById("main");fitEl(m,histOpen?48:76,36);m.scrollLeft=m.scrollWidth;var s=document.getElementById("sub");s.scrollLeft=s.scrollWidth}
+function fit(){var m=document.getElementById("main");fitEl(m,histOpen?56:76,36);m.scrollLeft=m.scrollWidth;var s=document.getElementById("sub");s.scrollLeft=s.scrollWidth}
 function press(k){
   var isOp=/^[+×÷−]$/.test(k);
   if(done){if(/^[\d.]$/.test(k)||k==="mr")expr="";done=false}
-  if(/^\d$/.test(k)){expr+=k}
+  if(/^\d$/.test(k)){if(lastNum()==="0")expr=expr.slice(0,-1)+k;else expr+=k}
   else if(k==="."){var ln=lastNum();if(ln===null||ln.indexOf(".")<0)expr+=(ln===null?"0.":".")}
   else if(isOp){
     if(expr===""){if(k==="−")expr="−"}
@@ -205,7 +240,7 @@ function renderHist(){
     var d=new Date(it.t),now=new Date();
     var dt=d.toLocaleDateString("en-US",{month:"short",day:"numeric"})+(d.getFullYear()!==now.getFullYear()?" "+d.getFullYear():"");
     var tm=d.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
-    s+='<div class="ent" data-i="'+i+'"><div class="hrow"><span class="ic">'+CLOCK+'</span><span>'+dt+'</span><span class="t">'+tm+'</span></div><div class="hr">'+fmtVal(parseFloat(String(it.r).replace("−","-")))+'</div><div class="he">'+fmtExpr(it.e)+'</div></div>';
+    s+='<div class="ent" data-i="'+i+'"><div class="hrow"><span class="ic">'+CLOCK+'</span><span>'+dt+'</span><span class="t">'+tm+'</span><button class="hdel" data-del="'+i+'">মুছুন</button></div><div class="hr">'+fmtVal(parseFloat(String(it.r).replace("−","-")))+'</div><div class="he">'+fmtExpr(it.e)+'</div></div>';
   });
   if(hist.length)s+='<button class="hclr" data-clr="1">হিস্ট্রি মুছুন</button>';
   h.innerHTML=s+'</div>';h.scrollTop=h.scrollHeight;
@@ -218,10 +253,10 @@ function toggleHist(){
   if(histOpen)renderHist();
   fit();
 }
-document.getElementById("hbtn").addEventListener("click",toggleHist);
+document.getElementById("hbtn").addEventListener("click",function(){toggleHist()});
 document.getElementById("hist").addEventListener("click",function(e){
-  if(e.target.closest("[data-clr]")){hist=[];save("calc_hist","[]");renderHist();return}
-  var n=e.target.closest(".ent");if(!n)return;
+  if(e.target.closest("[data-clr]")){showUndo("সব হিস্ট্রি মুছে গেছে",{all:hist});hist=[];save("calc_hist","[]");renderHist();return}
+  var dl=e.target.closest("[data-del]");if(dl){delHist(+dl.dataset.del);return}if(lpFired){lpFired=false;return}var n=e.target.closest(".ent");if(!n)return;
   var it=hist[+n.dataset.i];if(!it)return;
   lastExpr=it.e;expr=String(it.r);done=true;toggleHist();render();
 });
@@ -395,6 +430,71 @@ window.addEventListener("popstate",function(){
  else if(n==="hist"){if(histOpen)toggleHist()}
  else if(n==="age")$("app").classList.remove("agemode");
 });
+
+$("sub").insertAdjacentHTML("afterend",'<div class="sep"></div>');
+function updFade(el){var mx=el.scrollWidth-el.clientWidth;el.classList.toggle("fl",mx>1&&el.scrollLeft>1);el.classList.toggle("fr",mx>1&&el.scrollLeft<mx-1)}
+var _fit=fit;fit=function(){_fit();updFade($("main"));updFade($("sub"))};
+["main","sub"].forEach(function(id){$(id).addEventListener("scroll",function(){updFade(this)},{passive:true})});
+fit();
+
+document.body.insertAdjacentHTML("beforeend",'<div class="undo" id="undo" hidden><span id="utxt"></span><button id="ubtn">ফিরিয়ে আনুন</button></div><div class="pop" id="emenu" hidden><button data-e="copyr">ফলাফল কপি</button><button data-e="copyf">হিসাবসহ কপি</button><button data-e="del">মুছুন</button></div><div class="menu" id="menu" hidden><button data-m="hist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>হিস্ট্রি</button><button data-m="age"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>বয়সের ক্যালকুলেটর</button><button data-m="set"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>সেটিংস</button></div>');
+$("main").insertAdjacentHTML("afterend",'<div class="hhandle" id="hhandle"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></div>');
+var histT=null,undoT=null,undoData=null,emIdx=-1,lpT=null,lpX=0,lpY=0,lpFired=false;
+toggleHist=function(){
+ histOpen=!histOpen;
+ var d=$("disp"),h=$("hist"),a=$("app");
+ clearTimeout(histT);
+ $("hbtn").classList.toggle("on",histOpen);
+ if(histOpen){a.classList.add("hopen");d.classList.add("open");h.hidden=false;h.classList.remove("hout");renderHist()}
+ else{a.classList.remove("hopen");h.classList.add("hout");histT=setTimeout(function(){h.hidden=true;h.classList.remove("hout");d.classList.remove("open");fit()},260)}
+ fit();
+};
+$("hhandle").addEventListener("click",function(){toggleHist()});
+function showUndo(txt,data){undoData=data;$("utxt").textContent=txt;$("undo").hidden=false;clearTimeout(undoT);undoT=setTimeout(function(){$("undo").hidden=true;undoData=null},6000)}
+function keepScroll(fn){var h=$("hist"),st=h.scrollTop;fn();h.scrollTop=st}
+function delHist(i){var it=hist[i];if(!it)return;keepScroll(function(){hist.splice(i,1);save("calc_hist",JSON.stringify(hist));renderHist()});showUndo("মুছে ফেলা হয়েছে",{i:i,it:it})}
+$("ubtn").addEventListener("click",function(){var d=undoData;if(!d)return;undoData=null;clearTimeout(undoT);$("undo").hidden=true;
+ keepScroll(function(){if(d.all)hist=d.all;else hist.splice(Math.min(d.i,hist.length),0,d.it);save("calc_hist",JSON.stringify(hist));renderHist()})});
+$("hist").addEventListener("pointerdown",function(e){lpFired=false;if(e.target.closest("button"))return;var n=e.target.closest(".ent");if(!n)return;
+ lpX=e.clientX;lpY=e.clientY;clearTimeout(lpT);
+ lpT=setTimeout(function(){lpFired=true;emIdx=+n.dataset.i;var m=$("emenu");m.hidden=false;var w=m.offsetWidth||190,hh=m.offsetHeight||150;
+  m.style.left=Math.max(w/2+8,Math.min(innerWidth-w/2-8,lpX))+"px";m.style.top=Math.max(8,Math.min(innerHeight-hh-8,lpY-hh-14))+"px";
+  try{navigator.vibrate&&navigator.vibrate(20)}catch(x){}},500)});
+["pointerup","pointercancel","pointerleave"].forEach(function(t){$("hist").addEventListener(t,function(){clearTimeout(lpT)})});
+$("hist").addEventListener("pointermove",function(e){if(Math.abs(e.clientX-lpX)>8||Math.abs(e.clientY-lpY)>8)clearTimeout(lpT)});
+$("hist").addEventListener("contextmenu",function(e){e.preventDefault()});
+$("emenu").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;$("emenu").hidden=true;var it=hist[emIdx];if(!it)return;
+ if(b.dataset.e==="del"){delHist(emIdx);return}
+ var rv=String(it.r).replace("\u2212","-");
+ var txt=b.dataset.e==="copyr"?rv:conv(fmtExpr(it.e)+" = "+fmtVal(parseFloat(rv)));
+ copyText(txt).then(function(ok){toast(ok?"কপি হয়েছে":"কপি করা যায়নি")})});
+$("mbtn").addEventListener("click",function(){var m=$("menu");if(!m.hidden){m.hidden=true;return}
+ var r=$("mbtn").getBoundingClientRect();m.style.top=(r.bottom+6)+"px";m.style.right=Math.max(8,innerWidth-r.right)+"px";m.hidden=false});
+$("menu").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;$("menu").hidden=true;
+ if(b.dataset.m==="age")$("abtn").click();else if(b.dataset.m==="set")$("sbtn").click();else if(b.dataset.m==="hist")toggleHist()});
+document.addEventListener("pointerdown",function(e){
+ if(!$("emenu").hidden&&!e.target.closest("#emenu"))$("emenu").hidden=true;
+ if(!$("menu").hidden&&!e.target.closest("#menu,#mbtn"))$("menu").hidden=true;
+},true);
+var gx=0,gy=0,gok=false;
+$("disp").addEventListener("pointerdown",function(e){gok=!e.target.closest("#hist");gx=e.clientX;gy=e.clientY});
+$("disp").addEventListener("pointerup",function(e){if(!gok)return;gok=false;var dy=e.clientY-gy,dx=e.clientX-gx;if(Math.abs(dx)>70)return;
+ });
+
+var tx=0,ty=0,tOn=false,tDone=false,tHist=false,hbot=false;
+$("disp").addEventListener("touchstart",function(e){
+ if(e.touches.length!==1){tOn=false;return}
+ var t=e.touches[0],h=$("hist");tx=t.clientX;ty=t.clientY;tOn=true;tDone=false;
+ tHist=!!e.target.closest("#hist");hbot=h.scrollTop+h.clientHeight>=h.scrollHeight-3;
+},{passive:true});
+$("disp").addEventListener("touchmove",function(e){
+ if(!tOn||tDone)return;
+ var t=e.touches[0],dx=t.clientX-tx,dy=t.clientY-ty;
+ if(Math.abs(dy)<28||Math.abs(dy)<Math.abs(dx)*1.3)return;
+ if(histOpen){if(dy<0&&(!tHist||hbot)){tDone=true;toggleHist()}}
+ else if(dy>0&&!tHist){tDone=true;toggleHist()}
+},{passive:true});
+["touchend","touchcancel"].forEach(function(n){$("disp").addEventListener(n,function(){tOn=false},{passive:true})});
 </script>
 </body>
 </html>
