@@ -175,10 +175,21 @@ html[data-theme=light] .menu button+button::before{background:rgba(0,0,0,.16)}
 .tpm{font-size:20px;padding:0 18px;border-radius:14px;color:var(--acc)}
 .tchips{display:flex;flex-wrap:wrap;gap:8px}
 .tchips button{font-size:15px;padding:9px 14px;border-radius:14px;color:var(--dim)}
-.tnote{font-size:13px;line-height:1.6;color:var(--dim)}
+.tnote{white-space:pre-line;font-size:13px;line-height:1.6;color:var(--dim)}
 .terr{color:var(--acc);font-size:15px;min-height:0}
 .terr:empty{display:none}
 .tres[hidden]{display:none}
+
+.wtpanel{display:none;flex:1;min-height:0;overflow-y:auto;flex-direction:column;gap:14px;padding:14px 18px calc(16px + env(safe-area-inset-bottom,0px))}
+.wtmode .wtpanel{display:flex}
+.wtmode .disp,.wtmode .pad{display:none}
+.wtpanel input{-webkit-user-select:text;user-select:text}
+.wsel{flex:0 0 42%;min-width:0;height:48px;border:0;border-radius:14px;background:var(--key);color:var(--txt);font-size:17px;padding:0 10px;font-family:inherit}
+.wrow{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--line);font-size:17px;cursor:pointer}
+.wrow:first-child{border-top:0}
+.wrow span:last-child{text-align:right;word-break:break-all}
+.wrow.on{color:var(--acc)}
+.wres[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -507,9 +518,48 @@ document.addEventListener("click",function(e){if(e.target.closest("#menu [data-m
 var _abT=applyBn;applyBn=function(){_abT();tLabels();var el=$(TU[tSrc]);if(el.value!==""){el.value=conv(toEn(el.value));tCalc(tSrc)}};
 tLabels();
 
+/* ===== ওজন রূপান্তর ===== */
+var WU=[["mg","মিলিগ্রাম",0.001],["ratti","রতি",0.1215],["ana","আনা",0.729],["g","গ্রাম",1],["bhori","ভরি / তোলা",11.664],["oz","আউন্স",28.349523125],["chhatak","ছটাক",58.32],["poa","পোয়া",233.28],["lb","পাউন্ড",453.59237],["ser","সের",933.12],["kg","কেজি",1000],["mon","মণ",37324.8],["quintal","কুইন্টাল",100000],["ton","মেট্রিক টন",1000000]],wUnit="kg",wG=0,wOut="";
+function wIdx(k){for(var i=0;i<WU.length;i++)if(WU[i][0]===k)return i;return -1}
+(function(){var sv=load("calc_wunit");if(sv&&wIdx(sv)>=0)wUnit=sv})();
+(function(){var p=document.createElement("div");p.className="wtpanel";p.id="wt";
+ var opts=WU.map(function(u){return '<option value="'+u[0]+'">'+u[1]+'</option>'}).join("");
+ p.innerHTML='<div class="ahead"><button class="aback" id="wback" aria-label="ক্যালকুলেটর"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><div class="atitle">ওজন রূপান্তর</div></div>'+
+ '<div class="af"><span>ওজন লিখুন ও ইউনিট বাছুন</span><div class="ain"><input id="wv" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><select class="wsel" id="wu">'+opts+'</select></div></div>'+
+ '<div class="terr" id="werr"></div><div class="ares wres" id="wres" hidden></div><div class="tnote" id="wnote"></div>';
+ $("app").appendChild(p);$("wu").value=wUnit})();
+function wNum(s){s=toEn(s).replace(/,/g,"").trim();if(s===""||s===".")return null;if(!/^\d*\.?\d*$/.test(s))return NaN;return parseFloat(s)}
+function wFmt(x){if(x>=1e15)return fmtVal(x);var t=plain(parseFloat(x.toPrecision(8)));return t===null?fmtVal(x):fmtNum(t)}
+function wLabels(){$("wnote").textContent=conv("১ ভরি = ১ তোলা = 11.664 গ্রাম = ১৬ আনা  ·  ১ আনা = ৬ রতি\n১ সের = ৮০ ভরি = 933.12 গ্রাম = ৪ পোয়া = ১৬ ছটাক  ·  ১ মণ = ৪০ সের")}
+function wCalc(){
+ var v=wNum($("wv").value),err=$("werr"),box=$("wres");err.textContent="";box.hidden=true;wOut="";
+ if(v===null)return;
+ if(isNaN(v)){err.textContent="সঠিক সংখ্যা লিখুন";return}
+ if(v>1e12){err.textContent="সংখ্যাটি অনেক বড়";return}
+ var si=wIdx(wUnit);wG=v*WU[si][2];
+ var h="",L=[conv(wFmt(v))+" "+WU[si][1]+" ="];
+ WU.forEach(function(u){var t=conv(wFmt(wG/u[2]));if(u[0]!==wUnit)L.push(t+" "+u[1]);
+  h+='<div class="wrow'+(u[0]===wUnit?" on":"")+'" data-wu="'+u[0]+'"><span>'+u[1]+'</span><span>'+t+'</span></div>'});
+ wOut=L.join("\n");
+ box.innerHTML=h+'<div class="aact"><button data-act="wcopy">কপি</button><button data-act="wshare">শেয়ার</button></div>';box.hidden=false;
+}
+$("wv").addEventListener("input",function(){var x=this.value,y=x.replace(/[^0-9০-৯.]/g,"");if(x!==y)this.value=y;wCalc()});
+$("wu").addEventListener("change",function(){wUnit=this.value;save("calc_wunit",wUnit);wCalc()});
+$("wt").addEventListener("click",function(e){
+ var r=e.target.closest("[data-wu]"),ac=e.target.closest("[data-act]");
+ if(r){var k=r.dataset.wu,i=wIdx(k);if(i<0||k===wUnit)return;var x=wG/WU[i][2];if(!(x<=1e12))return;
+  var t=plain(parseFloat(x.toPrecision(12)));if(t===null)return;
+  wUnit=k;$("wu").value=k;save("calc_wunit",k);$("wv").value=conv(t);wCalc();return}
+ if(ac&&wOut){if(ac.dataset.act==="wcopy")copyText(wOut).then(function(ok){toast(ok?"কপি হয়েছে":"কপি করা যায়নি")});else shareText(wOut)}
+});
+$("wback").addEventListener("click",function(){$("app").classList.remove("wtmode")});
+document.addEventListener("click",function(e){if(e.target.closest("#menu [data-m=wt]"))$("app").classList.add("wtmode")});
+var _abW=applyBn;applyBn=function(){_abW();wLabels();var el=$("wv");if(el.value!=="")el.value=conv(toEn(el.value));wCalc()};
+wLabels();
+
 var layers=[],skipPop=0;
 function syncLayers(){
- var op={sheet:!$("sheet").hidden,about:!$("about").hidden,hist:histOpen,age:$("app").classList.contains("agemode"),temp:$("app").classList.contains("tempmode")};
+ var op={sheet:!$("sheet").hidden,about:!$("about").hidden,hist:histOpen,age:$("app").classList.contains("agemode"),temp:$("app").classList.contains("tempmode"),wt:$("app").classList.contains("wtmode")};
  layers=layers.filter(function(n){if(op[n])return true;try{skipPop++;history.back()}catch(e){skipPop--}return false});
  Object.keys(op).forEach(function(n){if(op[n]&&layers.indexOf(n)<0){layers.push(n);try{history.pushState({c:1},"")}catch(e){}}});
 }
@@ -522,6 +572,7 @@ window.addEventListener("popstate",function(){
  else if(n==="hist"){if(histOpen)toggleHist()}
  else if(n==="age")$("app").classList.remove("agemode");
  else if(n==="temp")$("app").classList.remove("tempmode");
+ else if(n==="wt")$("app").classList.remove("wtmode");
 });
 
 $("sub").insertAdjacentHTML("afterend",'<div class="sep"></div>');
@@ -530,7 +581,7 @@ var _fit=fit;fit=function(){_fit();updFade($("main"));updFade($("sub"))};
 ["main","sub"].forEach(function(id){$(id).addEventListener("scroll",function(){updFade(this)},{passive:true})});
 fit();
 
-document.body.insertAdjacentHTML("beforeend",'<div class="undo" id="undo" hidden><span id="utxt"></span><button id="ubtn">ফিরিয়ে আনুন</button></div><div class="pop" id="emenu" hidden><button data-e="copyr">ফলাফল কপি</button><button data-e="copyf">হিসাবসহ কপি</button><button data-e="del">মুছুন</button></div><div class="menu" id="menu" hidden><button data-m="hist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>হিস্ট্রি</button><button data-m="age"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>বয়সের ক্যালকুলেটর</button><button data-m="temp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.8V5a2 2 0 0 0-4 0v9.8a4 4 0 1 0 4 0z"/><path d="M12 9v7"/></svg>তাপমাত্রা রূপান্তর</button><button data-m="set"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>সেটিংস</button><button data-m="about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8 7h8"/><circle cx="9" cy="12" r=".6"/><circle cx="12" cy="12" r=".6"/><circle cx="15" cy="12" r=".6"/><circle cx="9" cy="16" r=".6"/><circle cx="12" cy="16" r=".6"/><circle cx="15" cy="16" r=".6"/></svg>অ্যাবাউট</button></div>');
+document.body.insertAdjacentHTML("beforeend",'<div class="undo" id="undo" hidden><span id="utxt"></span><button id="ubtn">ফিরিয়ে আনুন</button></div><div class="pop" id="emenu" hidden><button data-e="copyr">ফলাফল কপি</button><button data-e="copyf">হিসাবসহ কপি</button><button data-e="del">মুছুন</button></div><div class="menu" id="menu" hidden><button data-m="hist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>হিস্ট্রি</button><button data-m="age"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>বয়সের ক্যালকুলেটর</button><button data-m="temp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.8V5a2 2 0 0 0-4 0v9.8a4 4 0 1 0 4 0z"/><path d="M12 9v7"/></svg>তাপমাত্রা রূপান্তর</button><button data-m="wt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h10l3 12H4z"/><circle cx="12" cy="5" r="2"/></svg>ওজন রূপান্তর</button><button data-m="set"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>সেটিংস</button><button data-m="about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8 7h8"/><circle cx="9" cy="12" r=".6"/><circle cx="12" cy="12" r=".6"/><circle cx="15" cy="12" r=".6"/><circle cx="9" cy="16" r=".6"/><circle cx="12" cy="16" r=".6"/><circle cx="15" cy="16" r=".6"/></svg>অ্যাবাউট</button></div>');
 $("main").insertAdjacentHTML("afterend",'<div class="hhandle" id="hhandle"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></div>');
 var histT=null,undoT=null,undoData=null,emIdx=-1,lpT=null,lpX=0,lpY=0,lpFired=false;
 toggleHist=function(){
