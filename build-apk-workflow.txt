@@ -28,11 +28,19 @@ jobs:
         run: |
           sed -i 's/#3F51B5/#16171A/g; s/#303F9F/#16171A/g' android/app/src/main/res/values/colors.xml || true
           sed -i 's/android:configChanges/android:screenOrientation="portrait" android:configChanges/' android/app/src/main/AndroidManifest.xml || true
+      - name: Compute version automatically
+        run: |
+          # Release v7 was the last manual build (version 1.2). Build number 8 becomes 1.3, 9 becomes 1.4, and so on.
+          MINOR=$(( ${{ github.run_number }} - 5 ))
+          if [ "$MINOR" -lt 3 ]; then MINOR=3; fi
+          VER="1.$MINOR"
+          echo "Version $VER build ${{ github.run_number }}"
+          sed -i "s/APP_VERSION=\"[0-9.]*\"/APP_VERSION=\"$VER\"/" www/index.html
+          grep -q "APP_VERSION=\"$VER\"" www/index.html || { echo "APP_VERSION not found in www/index.html"; exit 1; }
+          echo "VER=$VER" >> "$GITHUB_ENV"
       - run: npx cap sync android
       - name: Set version
         run: |
-          VER=$(grep -o 'APP_VERSION="[0-9.]*"' www/index.html | head -1 | cut -d'"' -f2)
-          VER=${VER:-1.0}
           echo "Version $VER build ${{ github.run_number }}"
           sed -i 's/versionCode [0-9]*/versionCode ${{ github.run_number }}/' android/app/build.gradle
           sed -i "s/versionName \"[^\"]*\"/versionName \"$VER\"/" android/app/build.gradle
@@ -48,5 +56,5 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ github.run_number }}
-          name: Calculator v${{ github.run_number }}
+          name: Calculator ${{ env.VER }}
           files: android/app/build/outputs/apk/debug/app-debug.apk
