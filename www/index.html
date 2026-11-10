@@ -644,6 +644,26 @@ document.body.insertAdjacentHTML("beforeend",'<div class="sheet" id="about" hidd
 function openAbout(){$("aver").textContent=conv("সংস্করণ "+APP_VERSION);$("acopy").textContent=conv("© 2026 আব্দুল কাদের");$("about").hidden=false}
 $("about").addEventListener("click",function(e){if(e.target.id==="about"||e.target.id==="a_close")$("about").hidden=true});
 
+/* ===== অ্যান্ড্রয়েড ব্যাক বাটন ===== */
+function goBackOne(){
+ var el;
+ if(!(el=$("pop")).hidden){el.hidden=true;return true}
+ if($("emenu")&&!$("emenu").hidden){$("emenu").hidden=true;return true}
+ if($("menu")&&!$("menu").hidden){$("menu").hidden=true;return true}
+ if(!$("about").hidden){$("about").hidden=true;return true}
+ if(!$("sheet").hidden){$("sheet").hidden=true;return true}
+ var a=$("app").classList;
+ if(a.contains("agemode")){a.remove("agemode");return true}
+ if(a.contains("tempmode")){a.remove("tempmode");return true}
+ if(a.contains("wtmode")){a.remove("wtmode");return true}
+ if(histOpen){toggleHist();return true}
+ return false;
+}
+(function(){var A=window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.App;
+ if(!A||!A.addListener)return;
+ try{A.addListener("backButton",function(){if(!goBackOne()){try{A.exitApp()}catch(e){}}})}catch(e){}
+})();
+
 var APP_VERSION="1.2";
 (function(){var sp=$("splash");if(sp)sp.addEventListener("pointerdown",function(){sp.classList.add("skip")})})();
 </script>
