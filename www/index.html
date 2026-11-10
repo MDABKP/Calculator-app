@@ -239,7 +239,7 @@ function plain(n){var s=String(n);if(!/e/i.test(s))return s;var m=s.match(/^(-?)
 function fmtVal(n){if(!isFinite(n))return "ত্রুটি";var a=Math.abs(n);if(a>=1e15){return n.toExponential(14).replace(/\.?0+e/,"e").replace("e+","e").replace("-","−")}var s=plain(parseFloat(n.toPrecision(15)));return fmtNum(s).replace("-","−")}
 function evalExpr(e){
   var t=e.replace(/×/g,"*").replace(/÷/g,"/").replace(/−/g,"-");
-  var pm;while((pm=/(?<=[\d)])([+\-])(\d+\.?\d*|\.\d+)%/.exec(t))){var L=t.slice(0,pm.index);t=t.slice(0,pm.index)+pm[1]+(L?"(("+L+")*"+pm[2]+"/100)":"("+pm[2]+"/100)")+t.slice(pm.index+pm[0].length)}
+  var pm;while((pm=/(?<=[\d)])([+\-])(\d+\.?\d*|\.\d+)%(?![*\/])/.exec(t))){var L=t.slice(0,pm.index);t=t.slice(0,pm.index)+pm[1]+(L?"(("+L+")*"+pm[2]+"/100)":"("+pm[2]+"/100)")+t.slice(pm.index+pm[0].length)}
   t=t.replace(/(\d+\.?\d*|\.\d+|\))%/g,"($1/100)");
   t=t.replace(/(^|[^\d.])0+(?=\d)/g,"$1");
   t=t.replace(/[+\-*\/.(]+$/,"");
@@ -252,7 +252,7 @@ function render(){
   document.getElementById("mem").textContent=memory!==0?"m "+fmtVal(memory):"";
   var sub=document.getElementById("sub"),main=document.getElementById("main");
   if(isErr){sub.textContent=fmtExpr(lastExpr);main.textContent="ত্রুটি"}
-  else if(done){sub.textContent=fmtExpr(lastExpr);main.textContent=fmtVal(parseFloat(expr.replace("−","-")))}
+  else if(done){sub.textContent=fmtExpr(lastExpr)+" =";main.textContent=fmtVal(parseFloat(expr.replace("−","-")))}
   else{
     sub.textContent=expr===""?"":fmtExpr(expr);
     if(expr==="")main.textContent="0";
@@ -264,9 +264,11 @@ function render(){
 function fitEl(el,max,min){var size=max;el.style.fontSize=size+"px";
   while(el.scrollWidth>el.clientWidth&&size>min){size-=1;el.style.fontSize=size+"px"}}
 function fit(){var m=document.getElementById("main");fitEl(m,histOpen?56:76,36);m.scrollLeft=m.scrollWidth;var s=document.getElementById("sub");s.scrollLeft=s.scrollWidth}
+function riseMain(){var m=document.getElementById("main");m.classList.remove("rise");void m.offsetWidth;m.classList.add("rise")}
 function press(k){
   var isOp=/^[+×÷−]$/.test(k);
   if(isErr){isErr=false;expr="";lastExpr="";done=false}
+  if(done&&k==="=")return;
   if(done){if(/^[\d.]$/.test(k)||k==="mr")expr="";done=false}
   if(/^\d$/.test(k)&&!/%$/.test(expr)){var _l=lastNum();if(_l==="0")expr=expr.slice(0,-1)+k;else if(_l===null||_l.replace(".","").length<MAXD)expr+=k}
   else if(k==="."&&!/%$/.test(expr)){var ln=lastNum();if(ln===null||ln.indexOf(".")<0)expr+=(ln===null?"0.":".")}
@@ -279,7 +281,7 @@ function press(k){
   else if(k==="%"){if(/\d$/.test(expr))expr+="%"}
   else if(k==="C"){expr="";lastExpr="";isErr=false}
   else if(k==="back"){expr=expr.slice(0,-1)}
-  else if(k==="="){var v=evalExpr(expr);if(v!==null&&/[+×÷−%]/.test(expr)){lastExpr=expr;var ps=isFinite(v)?plain(parseFloat(v.toPrecision(15))):null;if(ps===null){expr="";isErr=true;done=true}else{expr=ps.replace("-","−");done=true;addHist(lastExpr,expr)}}}
+  else if(k==="="){var v=evalExpr(expr);if(v!==null&&/[+×÷−%]/.test(expr.replace(/^−/,""))){lastExpr=expr;var ps=isFinite(v)?plain(parseFloat(v.toPrecision(15))):null;if(ps===null){expr="";isErr=true;done=true}else{expr=ps.replace("-","−");done=true;addHist(lastExpr,expr);riseMain()}}}
   else if(k==="mc"){memory=0;save("calc_mem",0)}
   else if(k==="m+"){var _m=memory+current();if(isFinite(_m)){memory=parseFloat(_m.toPrecision(15));save("calc_mem",memory)}}
   else if(k==="m-"){var _m=memory-current();if(isFinite(_m)){memory=parseFloat(_m.toPrecision(15));save("calc_mem",memory)}}
@@ -402,6 +404,7 @@ function ageCalc(){
   if(dn(a)>dn(b)){if(am==="diff"){var sw=a;a=b;b=sw}else{r.innerHTML='<div class="aerr">জন্মতারিখ শেষ তারিখের আগে হতে হবে</div>';return}}
   var mo=(b.y-a.y)*12+(b.m-a.m);if(b.d<a.d)mo--;
   var an=addM(a,mo);if(dn(an)>dn(b)){mo--;an=addM(a,mo)}
+  while(dn(addM(a,mo+1))<=dn(b)){mo++;an=addM(a,mo)}
   var days=dn(b)-dn(a),yy=Math.floor(mo/12),mm=mo%12,dd=dn(b)-dn(an);
   var h='<div class="abig">'+yy+' বছর '+mm+' মাস '+dd+' দিন</div>'+arow("মোট মাস",fmtNum(String(mo)))+arow("মোট সপ্তাহ",fmtNum(String(Math.floor(days/7)))+" সপ্তাহ "+(days%7)+" দিন")+arow("মোট দিন",fmtNum(String(days)))+arow("মোট ঘণ্টা",fmtNum(String(days*24)));
   if(am==="age"){
