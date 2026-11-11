@@ -183,6 +183,44 @@ html[data-theme=light] .menu button+button::before{background:rgba(0,0,0,.16)}
 .wtpanel{display:none;flex:1;min-height:0;overflow-y:auto;flex-direction:column;gap:14px;padding:14px 18px calc(16px + env(safe-area-inset-bottom,0px))}
 .wtmode .wtpanel{display:flex}
 .wtmode .disp,.wtmode .pad{display:none}
+.ltpanel{display:none;flex:1;min-height:0;overflow-y:auto;flex-direction:column;gap:14px;padding:14px 18px calc(16px + env(safe-area-inset-bottom,0px))}
+.ltmode .ltpanel{display:flex}
+.ltmode .disp,.ltmode .pad{display:none}
+.ltpanel input{-webkit-user-select:text;user-select:text}
+.lres[hidden]{display:none}
+.vlpanel{display:none;flex:1;min-height:0;overflow-y:auto;flex-direction:column;gap:14px;padding:14px 18px calc(16px + env(safe-area-inset-bottom,0px))}
+.vlmode .vlpanel{display:flex}
+.vlmode .disp,.vlmode .pad{display:none}
+.vlpanel input{-webkit-user-select:text;user-select:text}
+.vlres[hidden]{display:none}
+.dbpanel{display:none;flex:1;min-height:0;overflow-y:auto;flex-direction:column;gap:14px;padding:14px 18px calc(16px + env(safe-area-inset-bottom,0px))}
+.dbmode .dbpanel{display:flex}
+.dbmode .disp,.dbmode .pad{display:none}
+.dbpanel input{-webkit-user-select:text;user-select:text}
+.dbres[hidden]{display:none}
+.dbbase{display:flex;gap:8px}
+.dbbase button{flex:1;height:42px;border:0;border-radius:12px;background:var(--key);color:var(--txt);font-size:14px;font-family:inherit}
+.dbbase button.on{background:var(--acc);color:#fff}
+.menu{max-height:calc(100vh - 80px);overflow-y:auto}
+.tmpanel{display:none;flex:1;min-height:0;overflow-y:auto;flex-direction:column;gap:14px;padding:14px 18px calc(16px + env(safe-area-inset-bottom,0px))}
+.tmmode .tmpanel{display:flex}
+.tmmode .disp,.tmmode .pad{display:none}
+.tmpanel input{-webkit-user-select:text;user-select:text}
+.tmres[hidden],.tmsec[hidden]{display:none}
+.tmsec{display:flex;flex-direction:column;gap:14px}
+.tmchips{display:flex;gap:8px}
+.tmchips button{flex:1;height:42px;border:0;border-radius:12px;background:var(--key);color:var(--txt);font-size:15px;font-family:inherit}
+.tmchips button.on{background:var(--acc);color:#fff}
+.tmhms{display:flex;gap:8px}
+.tmhms label{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.tmhms i{font-style:normal;font-size:13px;color:var(--dim)}
+.tmhms input{flex:none;width:100%;height:48px;box-sizing:border-box;text-align:center;padding:0 6px!important}
+.af input[type=time]{min-width:0;color-scheme:dark}
+html[data-theme=light] .af input[type=time]{color-scheme:light}
+.tmbig{font-size:24px;font-weight:500;padding:2px 0 12px;color:var(--acc);word-break:break-word}
+.wrow.stat{cursor:default}
+.tmextra{font-size:13px;color:var(--dim);margin-top:10px}
+
 .wtpanel input{-webkit-user-select:text;user-select:text}
 .wsel{flex:0 0 42%;min-width:0;height:48px;border:0;border-radius:14px;background:var(--key);color:var(--txt);font-size:17px;padding:0 10px;font-family:inherit}
 .wrow{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--line);font-size:17px;cursor:pointer}
@@ -560,11 +598,206 @@ $("wback").addEventListener("click",function(){$("app").classList.remove("wtmode
 document.addEventListener("click",function(e){if(e.target.closest("#menu [data-m=wt]"))$("app").classList.add("wtmode")});
 var _abW=applyBn;applyBn=function(){_abW();wLabels();var el=$("wv");if(el.value!=="")el.value=conv(toEn(el.value));wCalc()};
 wLabels();
+/* ===== দৈর্ঘ্য রূপান্তর ===== */
+var LU=[["mm","মিলিমিটার",0.001],["cm","সেন্টিমিটার",0.01],["in","ইঞ্চি",0.0254],["giri","গিরা",0.05715],["ft","ফুট",0.3048],["hat","হাত",0.4572],["gaj","গজ",0.9144],["m","মিটার",1],["rashi","রশি",5.0292],["km","কিলোমিটার",1000],["mi","মাইল",1609.344]],lUnit="m",lG=0,lOut="";
+function lIdx(k){for(var i=0;i<LU.length;i++)if(LU[i][0]===k)return i;return -1}
+(function(){var sv=load("calc_lunit");if(sv&&lIdx(sv)>=0)lUnit=sv})();
+(function(){var p=document.createElement("div");p.className="ltpanel";p.id="lt";
+ var opts=LU.map(function(u){return '<option value="'+u[0]+'">'+u[1]+'</option>'}).join("");
+ p.innerHTML='<div class="ahead"><button class="aback" id="lback" aria-label="ক্যালকুলেটর"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><div class="atitle">দৈর্ঘ্য রূপান্তর</div></div>'+
+ '<div class="af"><span>দৈর্ঘ্য লিখুন ও ইউনিট বাছুন</span><div class="ain"><input id="lv" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><select class="wsel" id="lu">'+opts+'</select></div></div>'+
+ '<div class="terr" id="lerr"></div><div class="ares lres" id="lres" hidden></div><div class="tnote" id="lnote"></div>';
+ $("app").appendChild(p);$("lu").value=lUnit})();
+function lNum(s){s=toEn(s).replace(/,/g,"").trim();if(s===""||s===".")return null;if(!/^\d*\.?\d*$/.test(s))return NaN;return parseFloat(s)}
+function lFmt(x){if(x>=1e15)return fmtVal(x);var t=plain(parseFloat(x.toPrecision(8)));return t===null?fmtVal(x):fmtNum(t)}
+function lLabels(){$("lnote").textContent=conv("1 গজ = 36 ইঞ্চি = 2 হাত = 16 গিরা\n1 হাত = 18 ইঞ্চি = 8 গিরা  ·  1 গিরা = 2.25 ইঞ্চি\n1 রশি = 16.5 ফুট  ·  1 ফুট = 12 ইঞ্চি")}
+function lCalc(){
+ var v=lNum($("lv").value),err=$("lerr"),box=$("lres");err.textContent="";box.hidden=true;lOut="";
+ if(v===null)return;
+ if(isNaN(v)){err.textContent="সঠিক সংখ্যা লিখুন";return}
+ if(v>1e12){err.textContent="সংখ্যাটি অনেক বড়";return}
+ var si=lIdx(lUnit);lG=v*LU[si][2];
+ var h="",L=[conv(lFmt(v))+" "+LU[si][1]+" ="];
+ LU.forEach(function(u){var t=conv(lFmt(lG/u[2]));if(u[0]!==lUnit)L.push(t+" "+u[1]);
+  h+='<div class="wrow'+(u[0]===lUnit?" on":"")+'" data-lu="'+u[0]+'"><span>'+u[1]+'</span><span>'+t+'</span></div>'});
+ lOut=L.join("\n");
+ box.innerHTML=h+'<div class="aact"><button data-act="lcopy">কপি</button><button data-act="lshare">শেয়ার</button></div>';box.hidden=false;
+}
+$("lv").addEventListener("input",function(){var x=this.value,y=x.replace(/[^0-9০-৯.]/g,"");if(x!==y)this.value=y;lCalc()});
+$("lu").addEventListener("change",function(){lUnit=this.value;save("calc_lunit",lUnit);lCalc()});
+$("lt").addEventListener("click",function(e){
+ var r=e.target.closest("[data-lu]"),ac=e.target.closest("[data-act]");
+ if(r){var k=r.dataset.lu,i=lIdx(k);if(i<0||k===lUnit)return;var x=lG/LU[i][2];if(!(x<=1e12))return;
+  var t=plain(parseFloat(x.toPrecision(12)));if(t===null)return;
+  lUnit=k;$("lu").value=k;save("calc_lunit",k);$("lv").value=conv(t);lCalc();return}
+ if(ac&&lOut){if(ac.dataset.act==="lcopy")copyText(lOut).then(function(ok){toast(ok?"কপি হয়েছে":"কপি করা যায়নি")});else shareText(lOut)}
+});
+$("lback").addEventListener("click",function(){$("app").classList.remove("ltmode")});
+document.addEventListener("click",function(e){if(e.target.closest("#menu [data-m=len]"))$("app").classList.add("ltmode")});
+var _abL=applyBn;applyBn=function(){_abL();lLabels();var el=$("lv");if(el.value!=="")el.value=conv(toEn(el.value));lCalc()};
+lLabels();
+
+/* ===== আয়তন রূপান্তর ===== */
+var VLU=[["ml","মিলিলিটার",0.001],["tsp","চা চামচ",0.00492892159375],["tbsp","টেবিল চামচ",0.01478676478125],["cup","কাপ (US)",0.2365882365],["l","লিটার",1],["galus","গ্যালন (US)",3.785411784],["galuk","গ্যালন (UK)",4.54609],["m3","ঘনমিটার",1000]],vlUnit="l",vlG=0,vlOut="";
+function vlIdx(k){for(var i=0;i<VLU.length;i++)if(VLU[i][0]===k)return i;return -1}
+(function(){var sv=load("calc_vlunit");if(sv&&vlIdx(sv)>=0)vlUnit=sv})();
+(function(){var p=document.createElement("div");p.className="vlpanel";p.id="vlt";
+ var opts=VLU.map(function(u){return '<option value="'+u[0]+'">'+u[1]+'</option>'}).join("");
+ p.innerHTML='<div class="ahead"><button class="aback" id="vlback" aria-label="ক্যালকুলেটর"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><div class="atitle">আয়তন রূপান্তর</div></div>'+
+ '<div class="af"><span>আয়তন লিখুন ও ইউনিট বাছুন</span><div class="ain"><input id="vlv" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><select class="wsel" id="vlu">'+opts+'</select></div></div>'+
+ '<div class="terr" id="vlerr"></div><div class="ares vlres" id="vlres" hidden></div><div class="tnote" id="vlnote"></div>';
+ $("app").appendChild(p);$("vlu").value=vlUnit})();
+function vlNum(s){s=toEn(s).replace(/,/g,"").trim();if(s===""||s===".")return null;if(!/^\d*\.?\d*$/.test(s))return NaN;return parseFloat(s)}
+function vlFmt(x){if(x>=1e15)return fmtVal(x);var t=plain(parseFloat(x.toPrecision(8)));return t===null?fmtVal(x):fmtNum(t)}
+function vlLabels(){$("vlnote").textContent=conv("1 লিটার = 1000 মিলিলিটার  ·  1 ঘনমিটার = 1000 লিটার\n1 গ্যালন (US) = 3.785 লিটার  ·  1 গ্যালন (UK) = 4.546 লিটার\n1 কাপ (US) = 236.59 মিলি  ·  1 টেবিল চামচ = 3 চা চামচ")}
+function vlCalc(){
+ var v=vlNum($("vlv").value),err=$("vlerr"),box=$("vlres");err.textContent="";box.hidden=true;vlOut="";
+ if(v===null)return;
+ if(isNaN(v)){err.textContent="সঠিক সংখ্যা লিখুন";return}
+ if(v>1e12){err.textContent="সংখ্যাটি অনেক বড়";return}
+ var si=vlIdx(vlUnit);vlG=v*VLU[si][2];
+ var h="",L=[conv(vlFmt(v))+" "+VLU[si][1]+" ="];
+ VLU.forEach(function(u){var t=conv(vlFmt(vlG/u[2]));if(u[0]!==vlUnit)L.push(t+" "+u[1]);
+  h+='<div class="wrow'+(u[0]===vlUnit?" on":"")+'" data-vlu="'+u[0]+'"><span>'+u[1]+'</span><span>'+t+'</span></div>'});
+ vlOut=L.join("\n");
+ box.innerHTML=h+'<div class="aact"><button data-act="vlcopy">কপি</button><button data-act="vlshare">শেয়ার</button></div>';box.hidden=false;
+}
+$("vlv").addEventListener("input",function(){var x=this.value,y=x.replace(/[^0-9০-৯.]/g,"");if(x!==y)this.value=y;vlCalc()});
+$("vlu").addEventListener("change",function(){vlUnit=this.value;save("calc_vlunit",vlUnit);vlCalc()});
+$("vlt").addEventListener("click",function(e){
+ var r=e.target.closest("[data-vlu]"),ac=e.target.closest("[data-act]");
+ if(r){var k=r.dataset.vlu,i=vlIdx(k);if(i<0||k===vlUnit)return;var x=vlG/VLU[i][2];if(!(x<=1e12))return;
+  var t=plain(parseFloat(x.toPrecision(12)));if(t===null)return;
+  vlUnit=k;$("vlu").value=k;save("calc_vlunit",k);$("vlv").value=conv(t);vlCalc();return}
+ if(ac&&vlOut){if(ac.dataset.act==="vlcopy")copyText(vlOut).then(function(ok){toast(ok?"কপি হয়েছে":"কপি করা যায়নি")});else shareText(vlOut)}
+});
+$("vlback").addEventListener("click",function(){$("app").classList.remove("vlmode")});
+document.addEventListener("click",function(e){if(e.target.closest("#menu [data-m=vl]"))$("app").classList.add("vlmode")});
+var _abVL=applyBn;applyBn=function(){_abVL();vlLabels();var el=$("vlv");if(el.value!=="")el.value=conv(toEn(el.value));vlCalc()};
+vlLabels();
+
+/* ===== ডেটা রূপান্তর ===== */
+var DBU=[["bit","বিট",0.125],["B","বাইট",1],["KB","KB",1024],["MB","MB",1048576],["GB","GB",1073741824],["TB","TB",1099511627776]],dbUnit="GB",dbG=0,dbOut="",dbBase=1024;
+function dbApply(){for(var i=2;i<6;i++)DBU[i][2]=Math.pow(dbBase,i-1)}
+(function(){var b=load("calc_dbbase");if(b==="1000")dbBase=1000;dbApply()})();
+function dbIdx(k){for(var i=0;i<DBU.length;i++)if(DBU[i][0]===k)return i;return -1}
+(function(){var sv=load("calc_dbunit");if(sv&&dbIdx(sv)>=0)dbUnit=sv})();
+(function(){var p=document.createElement("div");p.className="dbpanel";p.id="dbt";
+ var opts=DBU.map(function(u){return '<option value="'+u[0]+'">'+u[1]+'</option>'}).join("");
+ p.innerHTML='<div class="ahead"><button class="aback" id="dbback" aria-label="ক্যালকুলেটর"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><div class="atitle">ডেটা রূপান্তর</div></div>'+
+ '<div class="af"><span>পরিমাণ লিখুন ও ইউনিট বাছুন</span><div class="ain"><input id="dbv" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><select class="wsel" id="dbu">'+opts+'</select></div></div>'+
+ '<div class="dbbase" id="dbbase"><button data-b="1024"></button><button data-b="1000"></button></div><div class="terr" id="dberr"></div><div class="ares dbres" id="dbres" hidden></div><div class="tnote" id="dbnote"></div>';
+ $("app").appendChild(p);$("dbu").value=dbUnit})();
+function dbNum(s){s=toEn(s).replace(/,/g,"").trim();if(s===""||s===".")return null;if(!/^\d*\.?\d*$/.test(s))return NaN;return parseFloat(s)}
+function dbFmt(x){if(x>=1e15)return fmtVal(x);var t=plain(parseFloat(x.toPrecision(12)));return t===null?fmtVal(x):fmtNum(t)}
+function dbLabels(){var cs=$("dbbase").children;cs[0].textContent=conv("1024 (কম্পিউটার)");cs[1].textContent=conv("1000 (স্টোরেজ কোম্পানি)");for(var i=0;i<2;i++)cs[i].classList.toggle("on",cs[i].dataset.b==String(dbBase));$("dbnote").textContent=conv("1 বাইট = 8 বিট  ·  1 KB = "+dbBase+" বাইট\n1 MB = "+dbBase+" KB  ·  1 GB = "+dbBase+" MB  ·  1 TB = "+dbBase+" GB")}
+function dbCalc(){
+ var v=dbNum($("dbv").value),err=$("dberr"),box=$("dbres");err.textContent="";box.hidden=true;dbOut="";
+ if(v===null)return;
+ if(isNaN(v)){err.textContent="সঠিক সংখ্যা লিখুন";return}
+ if(v>1e15){err.textContent="সংখ্যাটি অনেক বড়";return}
+ var si=dbIdx(dbUnit);dbG=v*DBU[si][2];
+ var h="",L=[conv(dbFmt(v))+" "+DBU[si][1]+" ="];
+ DBU.forEach(function(u){var t=conv(dbFmt(dbG/u[2]));if(u[0]!==dbUnit)L.push(t+" "+u[1]);
+  h+='<div class="wrow'+(u[0]===dbUnit?" on":"")+'" data-dbu="'+u[0]+'"><span>'+u[1]+'</span><span>'+t+'</span></div>'});
+ dbOut=L.join("\n");
+ box.innerHTML=h+'<div class="aact"><button data-act="dbcopy">কপি</button><button data-act="dbshare">শেয়ার</button></div>';box.hidden=false;
+}
+$("dbv").addEventListener("input",function(){var x=this.value,y=x.replace(/[^0-9০-৯.]/g,"");if(x!==y)this.value=y;dbCalc()});
+$("dbu").addEventListener("change",function(){dbUnit=this.value;save("calc_dbunit",dbUnit);dbCalc()});
+$("dbt").addEventListener("click",function(e){
+ var r=e.target.closest("[data-dbu]"),ac=e.target.closest("[data-act]");
+ if(r){var k=r.dataset.dbu,i=dbIdx(k);if(i<0||k===dbUnit)return;var x=dbG/DBU[i][2];if(!(x<=1e15))return;
+  var t=plain(parseFloat(x.toPrecision(12)));if(t===null)return;
+  dbUnit=k;$("dbu").value=k;save("calc_dbunit",k);$("dbv").value=conv(t);dbCalc();return}
+ if(ac&&dbOut){if(ac.dataset.act==="dbcopy")copyText(dbOut).then(function(ok){toast(ok?"কপি হয়েছে":"কপি করা যায়নি")});else shareText(dbOut)}
+});
+$("dbback").addEventListener("click",function(){$("app").classList.remove("dbmode")});
+document.addEventListener("click",function(e){if(e.target.closest("#menu [data-m=db]"))$("app").classList.add("dbmode")});
+var _abDB=applyBn;applyBn=function(){_abDB();dbLabels();var el=$("dbv");if(el.value!=="")el.value=conv(toEn(el.value));dbCalc()};
+$("dbbase").addEventListener("click",function(e){var b=e.target.closest("[data-b]");if(!b)return;dbBase=+b.dataset.b;save("calc_dbbase",String(dbBase));dbApply();dbLabels();dbCalc()});
+dbLabels();
+
+
+/* ===== সময় ক্যালকুলেটর ===== */
+var TMU=[["s","সেকেন্ড",1],["min","মিনিট",60],["h","ঘণ্টা",3600],["d","দিন",86400],["w","সপ্তাহ",604800]],tmUnit="h",tmTab=0,tmOp=1,tmOut="",tmG=0;
+function tmIdx(k){for(var i=0;i<TMU.length;i++)if(TMU[i][0]===k)return i;return -1}
+(function(){var u=load("calc_tmunit");if(u&&tmIdx(u)>=0)tmUnit=u;var t=load("calc_tmtab");if(t==="1"||t==="2")tmTab=+t})();
+(function(){var p=document.createElement("div");p.className="tmpanel";p.id="tm";
+ var opts=TMU.map(function(u){return '<option value="'+u[0]+'">'+u[1]+'</option>'}).join("");
+ function hms(id,t){return '<div class="af"><span>'+t+'</span><div class="tmhms">'+
+  '<label><i>ঘণ্টা</i><input id="'+id+'h" data-n="i" type="text" inputmode="numeric" autocomplete="off"></label>'+
+  '<label><i>মিনিট</i><input id="'+id+'m" data-n="i" type="text" inputmode="numeric" autocomplete="off"></label>'+
+  '<label><i>সেকেন্ড</i><input id="'+id+'s" data-n="i" type="text" inputmode="numeric" autocomplete="off"></label></div></div>'}
+ p.innerHTML='<div class="ahead"><button class="aback" id="tmback" aria-label="ক্যালকুলেটর"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><div class="atitle">সময় ক্যালকুলেটর</div></div>'+
+ '<div class="tmchips" id="tmtabs"><button data-tab="0">যোগ-বিয়োগ</button><button data-tab="1">ব্যবধান</button><button data-tab="2">রূপান্তর</button></div>'+
+ '<div class="tmsec" data-s="0">'+hms("tma","প্রথম সময়")+'<div class="tmchips" id="tmop"><button data-op="1">+ যোগ</button><button data-op="-1">− বিয়োগ</button></div>'+hms("tmb","দ্বিতীয় সময়")+'</div>'+
+ '<div class="tmsec" data-s="1"><div class="af"><span>শুরুর সময়</span><div class="ain"><input id="tms" type="time"></div></div><div class="af"><span>শেষের সময়</span><div class="ain"><input id="tme" type="time"></div></div></div>'+
+ '<div class="tmsec" data-s="2"><div class="af"><span>সংখ্যা লিখুন ও ইউনিট বাছুন</span><div class="ain"><input id="tmcv" data-n="d" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><select class="wsel" id="tmcu">'+opts+'</select></div></div></div>'+
+ '<div class="terr" id="tmerr"></div><div class="ares tmres" id="tmres" hidden></div><div class="tnote" id="tmnote"></div>';
+ $("app").appendChild(p);$("tmcu").value=tmUnit})();
+function tmFmt(x){if(x>=1e15)return fmtVal(x);var t=plain(parseFloat(x.toPrecision(8)));return t===null?fmtVal(x):fmtNum(t)}
+function tmInt(id){var s=toEn($(id).value).replace(/[^0-9]/g,"");return s===""?0:parseInt(s,10)}
+function tmHas(ids){return ids.some(function(i){return toEn($(i).value).replace(/[^0-9]/g,"")!==""})}
+function tmTime(id){var v=$(id).value;if(!v)return null;var a=v.split(":");return (+a[0])*60+(+a[1])}
+function tmBreak(sec){var a=Math.abs(sec),h=Math.floor(a/3600),m=Math.floor(a%3600/60),s=a%60;return {h:h,m:m,s:s}}
+function tmLine(sec){var b=tmBreak(sec),t=conv(String(b.h))+" ঘণ্টা "+conv(String(b.m))+" মিনিট";if(b.s)t+=" "+conv(String(b.s))+" সেকেন্ড";return (sec<0?"− ":"")+t}
+function tmDays(sec){var a=Math.abs(sec);if(a<86400)return null;var d=Math.floor(a/86400),b=tmBreak(a%86400);return (sec<0?"− ":"")+conv(String(d))+" দিন "+conv(String(b.h))+" ঘণ্টা "+conv(String(b.m))+" মিনিট"+(b.s?" "+conv(String(b.s))+" সেকেন্ড":"")}
+function tmShowRes(sec,extra){
+ var box=$("tmres"),L=[tmLine(sec)],h='<div class="tmbig">'+tmLine(sec)+'</div>';
+ var dd=tmDays(sec);if(dd){L.push(dd);h+='<div class="wrow stat"><span>দিনসহ</span><span>'+dd+'</span></div>'}
+ [["মোট ঘণ্টা",3600],["মোট মিনিট",60],["মোট সেকেন্ড",1]].forEach(function(r){var t=(sec<0?"−":"")+conv(tmFmt(Math.abs(sec)/r[1]));L.push(r[0]+": "+t);h+='<div class="wrow stat"><span>'+r[0]+'</span><span>'+t+'</span></div>'});
+ if(extra)h+='<div class="tmextra">'+extra+'</div>';
+ tmOut=L.join("\n");box.innerHTML=h+'<div class="aact"><button data-act="tmcopy">কপি</button><button data-act="tmshare">শেয়ার</button></div>';box.hidden=false}
+function tmCalc(){
+ var err=$("tmerr"),box=$("tmres");err.textContent="";box.hidden=true;tmOut="";
+ if(tmTab===0){
+  if(!tmHas(["tmah","tmam","tmas","tmbh","tmbm","tmbs"]))return;
+  var A=tmInt("tmah")*3600+tmInt("tmam")*60+tmInt("tmas"),B=tmInt("tmbh")*3600+tmInt("tmbm")*60+tmInt("tmbs");
+  if(A>1e10||B>1e10){err.textContent="সংখ্যাটি অনেক বড়";return}
+  tmShowRes(A+tmOp*B)
+ }else if(tmTab===1){
+  var s=tmTime("tms"),e=tmTime("tme");if(s===null||e===null)return;
+  var d=e-s,ex="";if(d<0){d+=1440;ex="শেষের সময় আগে হওয়ায় পরের দিন ধরা হয়েছে"}
+  tmShowRes(d*60,ex)
+ }else{
+  var raw=toEn($("tmcv").value).replace(/,/g,"").trim();if(raw===""||raw===".")return;
+  if(!/^\d*\.?\d*$/.test(raw)){err.textContent="সঠিক সংখ্যা লিখুন";return}
+  var v=parseFloat(raw);if(v>1e12){err.textContent="সংখ্যাটি অনেক বড়";return}
+  var si=tmIdx(tmUnit);tmG=v*TMU[si][2];
+  var h="",L=[conv(tmFmt(v))+" "+TMU[si][1]+" ="];
+  TMU.forEach(function(u){var t=conv(tmFmt(tmG/u[2]));if(u[0]!==tmUnit)L.push(t+" "+u[1]);
+   h+='<div class="wrow'+(u[0]===tmUnit?" on":"")+'" data-tu="'+u[0]+'"><span>'+u[1]+'</span><span>'+t+'</span></div>'});
+  tmOut=L.join("\n");box.innerHTML=h+'<div class="aact"><button data-act="tmcopy">কপি</button><button data-act="tmshare">শেয়ার</button></div>';box.hidden=false}
+}
+function tmLabels(){
+ var n=["মিনিট বা সেকেন্ড 60-এর বেশি দিলেও ঠিক হিসাব হবে","মোট সময় ঘণ্টা-মিনিটে দেখানো হয়। শেষের সময় আগে হলে পরের দিন ধরা হয়","1 দিন = 24 ঘণ্টা = 1440 মিনিট = 86400 সেকেন্ড\n1 সপ্তাহ = 7 দিন = 168 ঘণ্টা"];
+ $("tmnote").textContent=conv(n[tmTab]);
+ var t=$("tmtabs").children,o=$("tmop").children;
+ for(var i=0;i<3;i++)t[i].classList.toggle("on",i===tmTab);
+ for(var j=0;j<2;j++)o[j].classList.toggle("on",+o[j].dataset.op===tmOp);
+ var ss=$("tm").querySelectorAll(".tmsec");for(var k=0;k<ss.length;k++)ss[k].hidden=(+ss[k].dataset.s!==tmTab)}
+$("tm").addEventListener("input",function(e){var el=e.target;if(el.dataset&&el.dataset.n){var x=el.value,y=el.dataset.n==="i"?x.replace(/[^0-9০-৯]/g,""):x.replace(/[^0-9০-৯.]/g,"");if(x!==y)el.value=y}tmCalc()});
+$("tm").addEventListener("change",function(e){if(e.target.type==="text")return;if(e.target.id==="tmcu"){tmUnit=e.target.value;save("calc_tmunit",tmUnit)}tmCalc()});
+$("tm").addEventListener("click",function(e){
+ var tb=e.target.closest("[data-tab]"),op=e.target.closest("[data-op]"),r=e.target.closest("[data-tu]"),ac=e.target.closest("[data-act]");
+ if(tb){tmTab=+tb.dataset.tab;save("calc_tmtab",String(tmTab));tmLabels();tmCalc();return}
+ if(op){tmOp=+op.dataset.op;tmLabels();tmCalc();return}
+ if(r){var k=r.dataset.tu,i=tmIdx(k);if(i<0||k===tmUnit)return;var x=tmG/TMU[i][2];if(!(x<=1e12))return;
+  var t=plain(parseFloat(x.toPrecision(12)));if(t===null)return;
+  tmUnit=k;$("tmcu").value=k;save("calc_tmunit",k);$("tmcv").value=conv(t);tmCalc();return}
+ if(ac&&tmOut){if(ac.dataset.act==="tmcopy")copyText(tmOut).then(function(ok){toast(ok?"কপি হয়েছে":"কপি করা যায়নি")});else shareText(tmOut)}
+});
+$("tmback").addEventListener("click",function(){$("app").classList.remove("tmmode")});
+document.addEventListener("click",function(e){if(e.target.closest("#menu [data-m=tm]"))$("app").classList.add("tmmode")});
+var _abT=applyBn;applyBn=function(){_abT();tmLabels();["tmah","tmam","tmas","tmbh","tmbm","tmbs","tmcv"].forEach(function(i){var el=$(i);if(el.value!=="")el.value=conv(toEn(el.value))});tmCalc()};
+tmLabels();
+
 
 var layers=[],skipPop=0,nativeBack=false;
 function syncLayers(){
  if(nativeBack)return;
- var op={sheet:!$("sheet").hidden,about:!$("about").hidden,hist:histOpen,age:$("app").classList.contains("agemode"),temp:$("app").classList.contains("tempmode"),wt:$("app").classList.contains("wtmode")};
+ var op={sheet:!$("sheet").hidden,about:!$("about").hidden,hist:histOpen,age:$("app").classList.contains("agemode"),temp:$("app").classList.contains("tempmode"),wt:$("app").classList.contains("wtmode"),len:$("app").classList.contains("ltmode"),vl:$("app").classList.contains("vlmode"),db:$("app").classList.contains("dbmode"),tm:$("app").classList.contains("tmmode")};
  layers=layers.filter(function(n){if(op[n])return true;try{skipPop++;history.back()}catch(e){skipPop--}return false});
  Object.keys(op).forEach(function(n){if(op[n]&&layers.indexOf(n)<0){layers.push(n);try{history.pushState({c:1},"")}catch(e){}}});
 }
@@ -578,6 +811,10 @@ window.addEventListener("popstate",function(){
  else if(n==="age")$("app").classList.remove("agemode");
  else if(n==="temp")$("app").classList.remove("tempmode");
  else if(n==="wt")$("app").classList.remove("wtmode");
+  else if(n==="len")$("app").classList.remove("ltmode");
+  else if(n==="vl")$("app").classList.remove("vlmode");
+  else if(n==="db")$("app").classList.remove("dbmode");
+  else if(n==="tm")$("app").classList.remove("tmmode");
 });
 
 $("sub").insertAdjacentHTML("afterend",'<div class="sep"></div>');
@@ -586,7 +823,7 @@ var _fit=fit;fit=function(){_fit();updFade($("main"));updFade($("sub"))};
 ["main","sub"].forEach(function(id){$(id).addEventListener("scroll",function(){updFade(this)},{passive:true})});
 fit();
 
-document.body.insertAdjacentHTML("beforeend",'<div class="undo" id="undo" hidden><span id="utxt"></span><button id="ubtn">ফিরিয়ে আনুন</button></div><div class="pop" id="emenu" hidden><button data-e="copyr">ফলাফল কপি</button><button data-e="copyf">হিসাবসহ কপি</button><button data-e="del">মুছুন</button></div><div class="menu" id="menu" hidden><button data-m="hist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>হিস্ট্রি</button><button data-m="age"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>বয়সের ক্যালকুলেটর</button><button data-m="temp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.8V5a2 2 0 0 0-4 0v9.8a4 4 0 1 0 4 0z"/><path d="M12 9v7"/></svg>তাপমাত্রা রূপান্তর</button><button data-m="wt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h10l3 12H4z"/><circle cx="12" cy="5" r="2"/></svg>ওজন রূপান্তর</button><button data-m="set"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>সেটিংস</button><button data-m="about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8 7h8"/><circle cx="9" cy="12" r=".6"/><circle cx="12" cy="12" r=".6"/><circle cx="15" cy="12" r=".6"/><circle cx="9" cy="16" r=".6"/><circle cx="12" cy="16" r=".6"/><circle cx="15" cy="16" r=".6"/></svg>অ্যাবাউট</button></div>');
+document.body.insertAdjacentHTML("beforeend",'<div class="undo" id="undo" hidden><span id="utxt"></span><button id="ubtn">ফিরিয়ে আনুন</button></div><div class="pop" id="emenu" hidden><button data-e="copyr">ফলাফল কপি</button><button data-e="copyf">হিসাবসহ কপি</button><button data-e="del">মুছুন</button></div><div class="menu" id="menu" hidden><button data-m="hist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>হিস্ট্রি</button><button data-m="age"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>বয়সের ক্যালকুলেটর</button><button data-m="temp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M20 9a3 3 0 0 0-3-3h-1a3 3 0 0 0-3 3v6a3 3 0 0 0 3 3h1a3 3 0 0 0 3-3"/></svg>তাপমাত্রা রূপান্তর</button><button data-m="wt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M6 6l6-1 6 1"/><path d="M12 3v17"/><path d="M9 12l-3-6-3 6a3 3 0 0 0 6 0"/><path d="M21 12l-3-6-3 6a3 3 0 0 0 6 0"/></svg>ওজন রূপান্তর</button><button data-m="len"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.875 8c.621 0 1.125.512 1.125 1.143v5.714c0 .631-.504 1.143-1.125 1.143h-15.875a1 1 0 0 1-1-1v-5.857c0-.631.504-1.143 1.125-1.143h15.75z"/><path d="M9 8v2M6 8v3M12 8v3M15 8v2M18 8v3"/></svg>দৈর্ঘ্য রূপান্তর</button><button data-m="vl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.502 19.423c2.602 2.105 6.395 2.105 8.996 0c2.602-2.105 3.262-5.708 1.566-8.546l-4.89-7.26c-.42-.625-1.287-.803-1.936-.397a1.376 1.376 0 0 0-.41.397l-4.893 7.26c-1.695 2.838-1.035 6.441 1.567 8.546z"/></svg>আয়তন রূপান্তর</button><button data-m="db"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6a8 3 0 1 0 16 0a8 3 0 1 0-16 0"/><path d="M4 6v6a8 3 0 0 0 16 0v-6"/><path d="M4 12v6a8 3 0 0 0 16 0v-6"/></svg>ডেটা রূপান্তর</button><button data-m="tm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13a7 7 0 1 0 14 0a7 7 0 0 0-14 0z"/><path d="M14.5 10.5l-2.5 2.5"/><path d="M17 8l1-1"/><path d="M14 3h-4"/></svg>সময় ক্যালকুলেটর</button><button data-m="set"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>সেটিংস</button><button data-m="about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8 7h8"/><circle cx="9" cy="12" r=".6"/><circle cx="12" cy="12" r=".6"/><circle cx="15" cy="12" r=".6"/><circle cx="9" cy="16" r=".6"/><circle cx="12" cy="16" r=".6"/><circle cx="15" cy="16" r=".6"/></svg>অ্যাবাউট</button></div>');
 $("main").insertAdjacentHTML("afterend",'<div class="hhandle" id="hhandle"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></div>');
 var histT=null,undoT=null,undoData=null,emIdx=-1,lpT=null,lpX=0,lpY=0,lpFired=false;
 toggleHist=function(){
@@ -661,6 +898,10 @@ function goBackOne(){
  if(a.contains("agemode")){a.remove("agemode");return true}
  if(a.contains("tempmode")){a.remove("tempmode");return true}
  if(a.contains("wtmode")){a.remove("wtmode");return true}
+  if(a.contains("ltmode")){a.remove("ltmode");return true}
+  if(a.contains("vlmode")){a.remove("vlmode");return true}
+  if(a.contains("dbmode")){a.remove("dbmode");return true}
+  if(a.contains("tmmode")){a.remove("tmmode");return true}
  if(histOpen){toggleHist();return true}
  return false;
 }
