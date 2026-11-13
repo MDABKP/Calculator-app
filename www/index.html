@@ -188,6 +188,65 @@ button{transition:background .25s}
 .sw button.on{border-color:var(--txt)}
 .sheet .card{max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .sheet .done{display:block;width:100%;margin:16px 0 0;background:var(--acc);color:#fff}
+/* ===== সেটিংস নতুন নকশা ===== */
+.setc{padding:0!important;display:flex;flex-direction:column;max-height:92vh}
+.sheet .setc{overflow:hidden}
+.shd{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 8px 22px;flex:none}
+.shd h3{margin:0;font-size:21px;font-weight:600}
+.sheet .shd button{margin:0;width:38px;height:38px;padding:0;border-radius:50%;background:var(--m);color:var(--txt);display:flex;align-items:center;justify-content:center}
+.shd button svg{width:18px;height:18px}
+#s_close svg,#s_close svg *{pointer-events:none}
+.sbody{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:0 16px calc(20px + env(safe-area-inset-bottom,0px))}
+.sh{font-size:13px;color:var(--acc);font-weight:600;padding:12px 8px 6px}
+.sc{background:var(--m);background:color-mix(in srgb,var(--txt) 7%,var(--panel));border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.setc .sr{display:flex;align-items:center;gap:12px;padding:8px 14px;font-size:16px;min-height:48px;border-bottom:1px solid var(--line)}
+.setc .sc>.sr:last-child,.setc .adv-b>.sr:last-child{border-bottom:0}
+.setc .sr.blk{flex-wrap:wrap}
+.si{flex:none;width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700}
+.si svg{width:18px;height:18px}
+.stx{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.stx b{font-weight:500}
+.stx small{font-size:12px;color:var(--dim);margin-top:2px}
+.setc input.tg{-webkit-appearance:none;appearance:none;position:relative;flex:none;width:48px;height:28px;margin:0;border-radius:14px;background:rgba(128,128,128,.4);cursor:pointer;transition:background .18s;accent-color:var(--acc)}
+.setc input.tg::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.35);transition:transform .18s}
+.setc input.tg:checked{background:var(--acc)}
+.setc input.tg:checked::after{transform:translateX(20px)}
+.setc input.tg:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.thead{padding:14px 14px 0;font-size:16px;font-weight:500}
+.thg{display:grid;grid-template-columns:repeat(5,1fr);gap:10px 4px;padding:10px 8px 14px;border-bottom:1px solid var(--line)}
+.setc .thg button{margin:0;padding:0;background:transparent;color:var(--dim);display:flex;flex-direction:column;align-items:center;gap:7px;font-size:11.5px;line-height:1.2;text-align:center;border-radius:12px}
+.setc .thg button.on{background:transparent;color:var(--txt);font-weight:700}
+.setc .thg .td{width:40px;height:40px;margin:3px}
+.setc .thg button.on .td{outline:2.5px solid var(--acc);outline-offset:3px}
+.setc .sr.blk .sw{width:100%;justify-content:space-between;margin-top:4px}
+.setc .sw button{margin:0;width:34px;height:34px}
+.seg{display:flex;width:100%;background:var(--bg);border-radius:12px;padding:3px;gap:2px}
+.seg.wrap{flex-wrap:wrap}
+.setc .seg button{margin:0;flex:1 1 auto;padding:8px 12px;font-size:14px;background:transparent;color:var(--txt);border-radius:9px;white-space:nowrap}
+.setc .seg button.on{background:var(--acc);color:#fff}
+.setc input[type=range]{flex:0 1 170px;width:170px;min-width:0;height:auto;accent-color:var(--acc)}
+.dep{transition:opacity .2s}
+.nosnd .dep{opacity:.38;pointer-events:none}
+.advh{cursor:pointer}
+.advh .chev{flex:none;color:var(--dim);display:flex;transition:transform .2s}
+.advh .chev svg{width:20px;height:20px}
+.adv.open .chev{transform:rotate(180deg)}
+.adv-b{display:none}
+.adv.open .adv-b{display:block}
+.adv.open .advh{border-bottom:1px solid var(--line)}
+.adv:not(.open) .advh{border-bottom:0}
+
+.cfm{position:fixed;inset:0;z-index:35;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);padding:24px}
+.cfm[hidden]{display:none}
+.cfmc{width:100%;max-width:320px;background:var(--panel);color:var(--txt);border:1px solid var(--line);border-radius:22px;padding:22px 20px 16px;box-shadow:0 10px 40px rgba(0,0,0,.5);animation:cfin .16s ease-out}
+@keyframes cfin{from{opacity:0;transform:scale(.94)}}
+.cfmt{font-size:19px;font-weight:600;text-align:center}
+.cfms{margin-top:8px;text-align:center;color:var(--dim);font-size:14px;line-height:1.45}
+.cfmb{display:flex;gap:10px;margin-top:18px}
+.cfmb button{flex:1;margin:0;padding:12px 8px;font-size:16px;border-radius:14px;background:var(--m);color:var(--txt)}
+.cfmb button#cfmy{background:#e8432e;color:#fff}
+@media (prefers-reduced-motion:reduce){.cfmc{animation:none}}
+
 .pop{position:fixed;z-index:15;display:flex;background:var(--key);border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.5);transform:translateX(-50%)}
 .pop button{font-size:16px;padding:10px 18px;background:transparent;border-radius:12px}
 .toast{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:rgba(0,0,0,.8);color:#fff;padding:8px 16px;border-radius:20px;font-size:15px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:30}
@@ -400,23 +459,7 @@ html[data-theme=light] .af input[type=time]{color-scheme:light}
     <button data-k="%">%</button><button data-k="0">0</button><button data-k=".">.</button><button class="eq" data-k="=">=</button>
   </div>
 </div>
-<div class="sheet" id="sheet" hidden><div class="card">
-<h3>সেটিংস</h3>
-<label><span>শব্দ</span><input type="checkbox" id="s_snd"></label>
-<div class="row"><span>শব্দের ধরন</span><div><button data-st="click">ক্লিক</button><button data-st="tick">টিক</button><button data-st="pop">পপ</button></div></div>
-<div class="row"><span>ভলিউম</span><input type="range" id="s_vol" min="5" max="100" step="5"></div>
-<label><span>কম্পন</span><input type="checkbox" id="s_vib"></label>
-<label><span>কি চাপলে রঙের ঝলক</span><input type="checkbox" id="s_flash"></label>
-<label><span>বাংলা সংখ্যা (১২৩)</span><input type="checkbox" id="s_bn"></label>
-<label><span>শুরুর অ্যানিমেশন</span><input type="checkbox" id="s_intro"></label>
-<label><span>= চাপলে নড়াচড়া</span><input type="checkbox" id="s_rpe"></label>
-<label><span>⌫ চাপলে নড়াচড়া</span><input type="checkbox" id="s_rpb"></label>
-<div class="row throw"><span>থিম</span><div class="thb"><button data-th="dark"><i class="td" style="background:linear-gradient(135deg,#1b1c1f 0 38%,#3a3b40 38% 68%,#f5900a 68%)"></i>ডার্ক</button><button data-th="light"><i class="td" style="background:linear-gradient(135deg,#eceef2 0 38%,#ffffff 38% 68%,#f5900a 68%)"></i>লাইট</button><button data-th="amoled"><i class="td" style="background:linear-gradient(135deg,#000000 0 38%,#27272a 38% 68%,#f5900a 68%)"></i>AMOLED কালো</button><button data-th="midnight"><i class="td" style="background:linear-gradient(135deg,#0d1426 0 38%,#243360 38% 68%,#3a9bff 68%)"></i>গভীর নীল</button><button data-th="cream"><i class="td" style="background:linear-gradient(135deg,#f3ecdf 0 38%,#fffaf0 38% 68%,#d9731a 68%)"></i>উষ্ণ ক্রিম</button><button data-th="cmix"><i class="td" style="background:linear-gradient(135deg,#14151a 0 30%,#7a4df0 30% 50%,#2a7de8 50% 65%,#22b455 65% 80%,#f5700a 80%)"></i>রঙিন মিশ্র</button><button data-th="cfull"><i class="td" style="background:conic-gradient(#e84a8a,#f5700a,#f0a500,#22b455,#13a6c4,#2a7de8,#7a4df0,#e84a8a)"></i>পূর্ণ রঙিন</button><button data-th="cpastel"><i class="td" style="background:linear-gradient(135deg,#f4f1fa 0 30%,#c9b3ff 30% 50%,#aed2ff 50% 65%,#a9ebc0 65% 80%,#ffc78f 80%)"></i>পেস্টেল</button><button data-th="cmixl"><i class="td" style="background:linear-gradient(135deg,#fff1e0 0 30%,#e9eef7 30% 45%,#7a4df0 45% 60%,#22b455 60% 75%,#f5700a 75%)"></i>মিশ্র হালকা</button><button data-th="cfulll"><i class="td" style="background:linear-gradient(135deg,#e3f3fb 0 30%,#f1ecfa 30% 45%,#2a7de8 45% 60%,#22b455 60% 75%,#f5700a 75%)"></i>পূর্ণ রঙিন হালকা</button></div></div>
-<div class="row throw"><span>মেনু মোশন</span><div class="thb" id="mamo"><button data-ma="mix">মিশ্রণ (সুপারিশ)</button><button data-ma="pop">পপ</button><button data-ma="slide">স্লাইড</button><button data-ma="stagger">সারি ধরে</button><button data-ma="off">বন্ধ</button></div></div>
-<div class="row throw"><span>মেনু গতি</span><div class="thb" id="mkmo"><button data-mk="fast">দ্রুত</button><button data-mk="normal">স্বাভাবিক</button><button data-mk="slow">ধীর</button></div></div>
-<div class="row"><span>রং</span><div class="sw" id="sw"></div></div>
-<button class="done" id="s_close">ঠিক আছে</button>
-</div></div>
+<div class="sheet" id="sheet" hidden><div class="card setc"><div class="shd"><h3>সেটিংস</h3><button id="s_close" aria-label="বন্ধ করুন"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="sbody"><div class="sh">চেহারা</div><div class="sc"><div class="thead">থিম</div><div class="thg"><button data-th="dark"><i class="td" style="background:linear-gradient(135deg,#1b1c1f 0 38%,#3a3b40 38% 68%,#f5900a 68%)"></i><span>ডার্ক</span></button><button data-th="light"><i class="td" style="background:linear-gradient(135deg,#eceef2 0 38%,#ffffff 38% 68%,#f5900a 68%)"></i><span>লাইট</span></button><button data-th="amoled"><i class="td" style="background:linear-gradient(135deg,#000000 0 38%,#27272a 38% 68%,#f5900a 68%)"></i><span>AMOLED</span></button><button data-th="midnight"><i class="td" style="background:linear-gradient(135deg,#0d1426 0 38%,#243360 38% 68%,#3a9bff 68%)"></i><span>গভীর নীল</span></button><button data-th="cream"><i class="td" style="background:linear-gradient(135deg,#f3ecdf 0 38%,#fffaf0 38% 68%,#d9731a 68%)"></i><span>ক্রিম</span></button><button data-th="cmix"><i class="td" style="background:linear-gradient(135deg,#14151a 0 30%,#7a4df0 30% 50%,#2a7de8 50% 65%,#22b455 65% 80%,#f5700a 80%)"></i><span>মিশ্র</span></button><button data-th="cfull"><i class="td" style="background:conic-gradient(#e84a8a,#f5700a,#f0a500,#22b455,#13a6c4,#2a7de8,#7a4df0,#e84a8a)"></i><span>রঙিন</span></button><button data-th="cpastel"><i class="td" style="background:linear-gradient(135deg,#f4f1fa 0 30%,#c9b3ff 30% 50%,#aed2ff 50% 65%,#a9ebc0 65% 80%,#ffc78f 80%)"></i><span>পেস্টেল</span></button><button data-th="cmixl"><i class="td" style="background:linear-gradient(135deg,#fff1e0 0 30%,#e9eef7 30% 45%,#7a4df0 45% 60%,#22b455 60% 75%,#f5700a 75%)"></i><span>মিশ্র হালকা</span></button><button data-th="cfulll"><i class="td" style="background:linear-gradient(135deg,#e3f3fb 0 30%,#f1ecfa 30% 45%,#2a7de8 45% 60%,#22b455 60% 75%,#f5700a 75%)"></i><span>রঙিন হালকা</span></button></div><div class="sr blk"><span class="si" style="background:linear-gradient(135deg,#ffa24a,#f5700a)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18c1 0 1.5-.8 1.5-1.5 0-.8-.5-1.2-.5-2 0-1 .8-1.5 1.5-1.5H17a4 4 0 0 0 4-4c0-5-4-9-9-9z"/><path d="M8 11h.01M12 8h.01M16 11h.01"/></svg></span><span class="stx"><b>অ্যাকসেন্ট রং</b></span><div class="sw" id="sw"></div></div><label class="sr"><span class="si" style="background:linear-gradient(135deg,#4fd8e8,#13a6c4)">১২</span><span class="stx"><b>বাংলা সংখ্যা</b></span><input type="checkbox" class="tg" id="s_bn"></label></div><div class="sh">শব্দ ও কম্পন</div><div class="sc"><label class="sr"><span class="si" style="background:linear-gradient(135deg,#5cb0ff,#2a7de8)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 8a5 5 0 0 1 0 8"/><path d="M6 15H4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h2l3.5-4.5a.8.8 0 0 1 1.5.5v14a.8.8 0 0 1-1.5.5L6 15z"/></svg></span><span class="stx"><b>শব্দ</b></span><input type="checkbox" class="tg" id="s_snd"></label><div class="sr blk dep"><span class="si" style="background:linear-gradient(135deg,#7d8bff,#4a52e0)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h2l2-6 4 12 3-9 2 3h5"/></svg></span><span class="stx"><b>শব্দের ধরন</b></span><div class="seg"><button data-st="click">ক্লিক</button><button data-st="tick">টিক</button><button data-st="pop">পপ</button></div></div><div class="sr dep"><span class="si" style="background:linear-gradient(135deg,#b28bff,#7a4df0)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 8a5 5 0 0 1 0 8"/><path d="M6 15H4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h2l3.5-4.5a.8.8 0 0 1 1.5.5v14a.8.8 0 0 1-1.5.5L6 15z"/></svg></span><span class="stx"><b>ভলিউম</b><small id="s_volv"></small></span><input type="range" id="s_vol" min="5" max="100" step="5"></div><label class="sr"><span class="si" style="background:linear-gradient(135deg,#5fe08a,#22b455)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h8v12H8z"/><path d="M4 9v6M20 9v6"/></svg></span><span class="stx"><b>কম্পন</b></span><input type="checkbox" class="tg" id="s_vib"></label></div><div class="sh">অ্যানিমেশন ও ইফেক্ট</div><div class="sc"><label class="sr"><span class="si" style="background:linear-gradient(135deg,#ff7ab0,#e84a8a)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16l13-8z"/></svg></span><span class="stx"><b>শুরুর অ্যানিমেশন</b><small>অ্যাপ খোলার সময় স্বাগত অ্যানিমেশন</small></span><input type="checkbox" class="tg" id="s_intro"></label><label class="sr"><span class="si" style="background:linear-gradient(135deg,#ffa24a,#f5700a)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3v7h6l-8 11v-7H5l8-11z"/></svg></span><span class="stx"><b>রঙের ঝলক</b><small>বাটন চাপলে রঙ ঝলকাবে</small></span><input type="checkbox" class="tg" id="s_flash"></label><label class="sr"><span class="si" style="background:linear-gradient(135deg,#5fe08a,#22b455)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></span><span class="stx"><b>ফলাফলের নড়াচড়া</b><small>= চাপলে ফলাফল ওপরে উঠে আসবে</small></span><input type="checkbox" class="tg" id="s_rpe"></label><label class="sr"><span class="si" style="background:linear-gradient(135deg,#ff8a78,#e8432e)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-11l-5-6 5-6z"/><path d="M12 10l4 4M16 10l-4 4"/></svg></span><span class="stx"><b>মুছার নড়াচড়া</b><small>⌫ চাপলে সংখ্যা মুছার নড়াচড়া দেখাবে</small></span><input type="checkbox" class="tg" id="s_rpb"></label></div><div class="sh">উন্নত</div><div class="sc adv" id="adv"><div class="sr advh" id="advh" role="button" tabindex="0"><span class="si" style="background:linear-gradient(135deg,#a7acb8,#6b707c)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h8M18 7h2M4 17h4M14 17h6"/><circle cx="15" cy="7" r="2"/><circle cx="11" cy="17" r="2"/></svg></span><span class="stx"><b>মেনুর অ্যানিমেশন ও গতি</b><small>মেনু খোলা-বন্ধের ধরন ও গতি</small></span><span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></div><div class="adv-b"><div class="sr blk"><span class="si" style="background:linear-gradient(135deg,#a7acb8,#6b707c)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span><span class="stx"><b>মেনুর অ্যানিমেশন</b></span><div class="seg wrap" id="mamo"><button data-ma="mix">মিশ্রণ (সুপারিশ)</button><button data-ma="pop">পপ</button><button data-ma="slide">স্লাইড</button><button data-ma="stagger">সারি ধরে</button><button data-ma="off">বন্ধ</button></div></div><div class="sr blk"><span class="si" style="background:linear-gradient(135deg,#a7acb8,#6b707c)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 12l4-3"/></svg></span><span class="stx"><b>মেনুর গতি</b></span><div class="seg" id="mkmo"><button data-mk="fast">দ্রুত</button><button data-mk="normal">স্বাভাবিক</button><button data-mk="slow">ধীর</button></div></div></div></div></div></div></div>
 <div class="pop" id="pop" hidden><button data-p="copy">কপি</button><button data-p="paste">পেস্ট</button></div>
 <div class="toast" id="toast"></div>
 <script>
@@ -518,7 +561,7 @@ function toggleHist(){
 }
 document.getElementById("hbtn").addEventListener("click",function(){toggleHist()});
 document.getElementById("hist").addEventListener("click",function(e){
-  if(e.target.closest("[data-clr]")){clearAllAnim();return}
+  if(e.target.closest("[data-clr]")){askClear();return}
   var dl=e.target.closest("[data-del]");if(dl){animDel(dl);return}if(swFired){swFired=false;return}if(lpFired){lpFired=false;return}var sw0=e.target.closest(".hsw");if(sw0&&sw0.dataset.open){swClose(sw0);return}var n=e.target.closest(".ent");if(!n)return;
   var it=hist[+n.dataset.i];if(!it)return;
   lastExpr=it.e;expr=String(it.r);done=true;toggleHist();render();
@@ -536,9 +579,13 @@ function applySet(){var r=document.documentElement;if(!THC[S.th])S.th="dark";r.s
  document.querySelectorAll("[data-th]").forEach(function(b){b.classList.toggle("on",b.dataset.th===S.th)});
  document.querySelectorAll("[data-ma]").forEach(function(b){b.classList.toggle("on",b.dataset.ma===S.ma)});
  document.querySelectorAll("[data-mk]").forEach(function(b){b.classList.toggle("on",b.dataset.mk===(S.mk||"normal"))});
- document.querySelectorAll("[data-c]").forEach(function(b){b.classList.toggle("on",b.dataset.c===S.acc)})}
+ document.querySelectorAll("[data-c]").forEach(function(b){b.classList.toggle("on",b.dataset.c===S.acc)});$("s_volv").textContent=(typeof BN!=="undefined"?conv(S.vol+"%"):S.vol+"%");$("sheet").classList.toggle("nosnd",!S.snd);$("s_vol").disabled=!S.snd;document.querySelectorAll("[data-st]").forEach(function(b){b.disabled=!S.snd})}
 ACCS.forEach(function(c){var b=document.createElement("button");b.dataset.c=c;b.style.background=c;$("sw").appendChild(b)});
 $("sbtn").addEventListener("click",function(){$("sheet").hidden=false});
+$("sbtn").addEventListener("click",function(){var bd=document.querySelector(".sbody");if(bd)bd.scrollTop=0;$("adv").classList.remove("open");$("s_volv").textContent=conv(S.vol+"%")});
+$("advh").addEventListener("click",function(){$("adv").classList.toggle("open")});
+$("advh").addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();$("adv").classList.toggle("open")}});
+$("s_vol").addEventListener("input",function(){$("s_volv").textContent=conv(this.value+"%")});
 $("sheet").addEventListener("click",function(e){var t=e.target;
  if(t.id==="sheet"||t.id==="s_close")$("sheet").hidden=true;
  var th=t.closest("[data-th]"),c=t.closest("[data-c]"),st=t.closest("[data-st]"),ma=t.closest("[data-ma]"),mk=t.closest("[data-mk]");if(ma){S.ma=ma.dataset.ma;applySet()}if(mk){S.mk=mk.dataset.mk;applySet()}if(st){S.st=st.dataset.st;applySet();if(S.snd)beep()}
@@ -1050,6 +1097,13 @@ function animDel(btn){
  delBusy=true;swOpen=null;
  sw.style.height=sw.offsetHeight+"px";void sw.offsetHeight;sw.classList.add("rm");
  setTimeout(function(){delBusy=false;delHist(i)},200)}
+document.body.insertAdjacentHTML("beforeend",'<div class="cfm" id="cfm" hidden role="alertdialog" aria-modal="true" aria-labelledby="cfmt"><div class="cfmc"><div class="cfmt" id="cfmt">সব হিস্ট্রি মুছবেন?</div><div class="cfms" id="cfms"></div><div class="cfmb"><button id="cfmn">বাতিল</button><button id="cfmy">সব মুছুন</button></div></div></div>');
+function askClear(){if(!hist.length||delBusy)return;$("cfms").textContent=conv(hist.length+"টি হিসাব মুছে যাবে। মুছে ফেলার পর কিছুক্ষণ ‘ফিরিয়ে আনুন’ বাটন পাবেন।");$("cfm").hidden=false;try{$("cfmn").focus()}catch(e){}}
+function closeCfm(){$("cfm").hidden=true}
+$("cfmn").addEventListener("click",closeCfm);
+$("cfmy").addEventListener("click",function(){closeCfm();clearAllAnim()});
+$("cfm").addEventListener("click",function(e){if(e.target.id==="cfm")closeCfm()});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!$("cfm").hidden)closeCfm()});
 function clearAllAnim(){
  if(!hist.length||delBusy)return;
  var all=hist;showUndo("সব হিস্ট্রি মুছে গেছে",{all:all});hist=[];save("calc_hist","[]");
@@ -1115,6 +1169,7 @@ $("about").addEventListener("click",function(e){if(e.target.id==="about"||e.targ
 /* ===== অ্যান্ড্রয়েড ব্যাক বাটন ===== */
 function goBackOne(){
  var el;
+ if($("cfm")&&!$("cfm").hidden){$("cfm").hidden=true;return true}
  if(!(el=$("pop")).hidden){el.hidden=true;return true}
  if($("emenu")&&!$("emenu").hidden){$("emenu").hidden=true;return true}
  if($("menu")&&menuIsOpen()){menuClose();return true}
