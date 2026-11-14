@@ -490,6 +490,42 @@ html[data-theme=light] .af input[type=time]{color-scheme:light}
 .cfa button{flex:1;font-size:16px;padding:12px 0;border-radius:14px}
 .cfa .p{background:var(--acc);color:#fff}
 .cfclr{align-self:center;background:transparent;color:var(--dim);font-size:15px;padding:10px 18px;border-radius:12px}
+
+/* v18: কাপড়ের হিসাব */
+.clpanel{display:none;flex:1;min-height:0;overflow-y:auto;flex-direction:column;gap:14px;padding:14px 18px calc(16px + env(safe-area-inset-bottom,0px))}
+.clmode .clpanel{display:flex}
+.clmode .disp,.clmode .pad{display:none}
+.clpanel input{-webkit-user-select:text;user-select:text}
+#clbody{display:flex;flex-direction:column;gap:14px}
+
+/* v19: কাপড়ের ট্যাব */
+.cltabs{display:flex;gap:6px;position:sticky;top:0;z-index:5;background:var(--bg);padding:2px 0 6px}
+.cltabs button{flex:1;min-height:48px;padding:6px 4px;border:0;border-radius:12px;background:var(--key);color:var(--txt);font-size:13.5px;line-height:1.3;font-family:inherit}
+.cltabs button.on{background:var(--acc);color:#fff}
+.clstat{font-size:13px;line-height:1.6;color:var(--dim);padding-bottom:10px}
+.cfa .p{flex:1.1}
+
+/* v20: প্রতি পিসের দর */
+.cfg.g3e{grid-template-columns:1fr 1fr 1.2fr}
+.clrp{display:flex;justify-content:space-between;gap:10px;padding-top:8px;border-top:1px solid var(--line);font-size:15px;color:var(--dim)}
+.clrp:empty{display:none}
+.clrp span:last-child{color:var(--acc);font-weight:600;white-space:nowrap}
+
+/* v21: পিস ঘর ও তিন অংশের মোট */
+.cfg.g3c{grid-template-columns:1.3fr .8fr 1.3fr}
+.cfg.g4c{grid-template-columns:1fr 1fr .8fr 1.3fr}
+.clpanel .cfg{gap:6px}
+.clpanel .cfg input{font-size:16px;padding:0 2px}
+.clpair{display:flex;flex-direction:column;gap:6px;padding:2px 0 12px}
+.clpair div{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.clpair span{font-size:15px;color:var(--dim)}
+.clpair b{font-size:22px;font-weight:500;color:var(--acc);word-break:break-word}
+
+/* v22: হিস্ট্রিতে দুই লাইনের ফলাফল */
+.hr.hx{font-size:20px;font-weight:600}
+
+/* v22b: কাঠের ট্যাব */
+.cftabs button small{display:block;font-size:12px;opacity:.85;min-height:15px}
 </style>
 </head>
 <body>
@@ -540,7 +576,7 @@ function render(){
   document.getElementById("mem").textContent=memory!==0?"m "+fmtVal(memory):"";
   var sub=document.getElementById("sub"),main=document.getElementById("main");
   if(isErr){sub.textContent=fmtExpr(lastExpr);main.textContent="ত্রুটি"}
-  else if(done){sub.textContent=fmtExpr(lastExpr)+" =";main.textContent=fmtVal(parseFloat(expr.replace("−","-")))}
+  else if(done){sub.textContent=lastExpr?fmtExpr(lastExpr)+" =":"";main.textContent=fmtVal(parseFloat(expr.replace("−","-")))}
   else{
     sub.textContent=expr===""?"":fmtExpr(expr);
     if(expr==="")main.textContent="0";
@@ -572,15 +608,27 @@ function press(k){
   else if(k==="back"){expr=expr.slice(0,-1);if(S.rpb!==false)riseBack()}
   else if(k==="="){var v=evalExpr(expr);if(v!==null&&/[+×÷−%]/.test(expr.replace(/^−/,""))){lastExpr=expr;var ps=isFinite(v)?plain(parseFloat(v.toPrecision(15))):null;if(ps===null){expr="";isErr=true;done=true}else{expr=ps.replace("-","−");done=true;addHist(lastExpr,expr);riseMain()}}else if(S.rpe!==false)riseMain()}
   else if(k==="mc"){memory=0;save("calc_mem",0)}
-  else if(k==="m+"){var _m=memory+current();if(isFinite(_m)){memory=parseFloat(_m.toPrecision(15));save("calc_mem",memory)}}
-  else if(k==="m-"){var _m=memory-current();if(isFinite(_m)){memory=parseFloat(_m.toPrecision(15));save("calc_mem",memory)}}
+  else if(k==="m+"||k==="m-"){
+    var _v=expr===""?null:evalExpr(expr);
+    if(_v!==null&&isFinite(_v)){
+      var _m=k==="m+"?memory+_v:memory-_v;
+      if(isFinite(_m)){
+        memory=parseFloat(_m.toPrecision(15));save("calc_mem",memory);
+        if(!done){var _ps=plain(parseFloat(_v.toPrecision(15)));
+          if(_ps!==null){
+            if(/[+×÷−%]/.test(expr.replace(/^−/,""))){lastExpr=expr;addHist(lastExpr,_ps.replace("-","−"))}else lastExpr="";
+            expr=_ps.replace("-","−");done=true;riseMain()}}
+      }
+    }
+  }
   else if(k==="mr"){var s=plain(Math.abs(memory))||"0";var tn=expr.match(/\d+\.?\d*%?$|\.\d*$/);if(tn)expr=expr.slice(0,tn.index);expr+=memory<0?"−"+s:s}
   render();
 }
 try{hist=JSON.parse(load("calc_hist")||"[]")}catch(e){hist=[]}
 if(!Array.isArray(hist))hist=[];
 var CLOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>';
-function addHist(e,r){hist.push({e:e,r:r,t:Date.now()});if(hist.length>200)hist.shift();save("calc_hist",JSON.stringify(hist));if(histOpen)renderHist()}
+function hEsc(v){return String(v).replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c]})}
+function addHist(e,r,x,u){var o={e:e,r:r,t:Date.now()};if(x)o.x=String(x).slice(0,80);if(u)o.u=String(u).slice(0,20);hist.push(o);if(hist.length>200)hist.shift();save("calc_hist",JSON.stringify(hist));if(histOpen)renderHist()}
 function bnClock(d){var h=d.getHours(),m=d.getMinutes(),p=h<4?"রাত":h<6?"ভোর":h<12?"সকাল":h<15?"দুপুর":h<18?"বিকাল":h<20?"সন্ধ্যা":"রাত";return p+" "+(h%12||12)+":"+(m<10?"0":"")+m}
 var TRASH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>';
 function dayLabel(d){
@@ -598,7 +646,7 @@ function renderHist(){
   hist.forEach(function(it,i){
     var d=new Date(it.t),key=d.getFullYear()+"-"+d.getMonth()+"-"+d.getDate();
     if(key!==lastKey){if(open)s+='</div>';s+='<div class="hgrp"><div class="hgl">'+dayLabel(d)+'</div>';lastKey=key;open=true}
-    s+='<div class="hsw"><button class="sdel" data-del="'+i+'" aria-label="মুছুন">'+TRASH+'</button><div class="ent" data-i="'+i+'"><div class="hm"><span class="t">'+bnClock(d)+'</span><span class="he">'+fmtExpr(it.e)+'</span></div><div class="hr">= '+fmtVal(parseFloat(String(it.r).replace("−","-")))+'</div></div></div>';
+    s+='<div class="hsw"><button class="sdel" data-del="'+i+'" aria-label="মুছুন">'+TRASH+'</button><div class="ent" data-i="'+i+'"><div class="hm"><span class="t">'+bnClock(d)+'</span><span class="he">'+fmtExpr(it.e)+'</span></div>'+(it.x?'<div class="hr hx">= '+hEsc(it.x)+'</div>':'')+'<div class="hr">= '+fmtVal(parseFloat(String(it.r).replace("−","-")))+(it.u?' '+hEsc(it.u):'')+'</div></div></div>';
   });
   if(open)s+='</div>';
   h.innerHTML=s+'</div>';h.scrollTop=h.scrollHeight;
@@ -989,14 +1037,14 @@ dbLabels();
 
 
 /* ===== কাঠের CFT হিসাব ===== */
-var CFK="calc_cft",cf={cu:"ft",ru:"ft",c:[{l:"",w:"",t:"",n:""}],r:[{l:"",g:"",n:""}],cr:"",rr:"",bad:""},cfOut="",cfHE="",cfHR="",cfRst=0,cfRstT=null;
+var CFK="calc_cft",cf={tab:"c",cu:"ft",ru:"ft",c:[{l:"",w:"",t:"",n:""}],r:[{l:"",g:"",n:""}],cr:"",rr:"",bad:""},cfOut="",cfHE="",cfHR="",cfRst=0,cfRstT=null;
 function cfRows(a,keys){if(!Array.isArray(a)||!a.length)return null;return a.slice(0,60).map(function(o){var x={};keys.forEach(function(k){x[k]=(o&&typeof o[k]==="string")?o[k].slice(0,20):""});return x})}
 (function(){try{var v=JSON.parse(load(CFK)||"null");if(v&&typeof v==="object"){
- if(v.cu==="hat")cf.cu="hat";if(v.ru==="hat")cf.ru="hat";
+ if(v.tab==="r")cf.tab="r";if(v.cu==="hat")cf.cu="hat";if(v.ru==="hat")cf.ru="hat";
  ["cr","rr","bad"].forEach(function(k){if(typeof v[k]==="string")cf[k]=v[k].slice(0,20)});
  var c=cfRows(v.c,["l","w","t","n"]),r=cfRows(v.r,["l","g","n"]);if(c)cf.c=c;if(r)cf.r=r}}catch(e){}})();
 (function(){var p=document.createElement("div");p.className="tmpanel";p.id="tm";
- p.innerHTML='<div class="ahead"><button class="aback" id="tmback" aria-label="ক্যালকুলেটর"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><div class="atitle">কাঠের হিসাব (CFT)</div></div><div id="cfbody"></div>';
+ p.innerHTML='<div class="ahead"><button class="aback" id="tmback" aria-label="ক্যালকুলেটর"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><div class="atitle">কাঠের হিসাব (CFT)</div></div><div class="cltabs cftabs" id="cftabs"><button data-ctab="c">চিরাই কাঠ<small data-ts="c"></small></button><button data-ctab="r">গোল কাঠ<small data-ts="r"></small></button></div><div id="cfbody"></div>';
  $("app").appendChild(p)})();
 function cfEsc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function cfPn(v){var s=toEn(v).replace(/,/g,"").trim();if(s===""||s===".")return NaN;var x=parseFloat(s);return isFinite(x)?x:NaN}
@@ -1018,7 +1066,8 @@ function cfSec(s){
  '<button class="cfadd" data-cadd="'+s+'">+ আরেকটা যোগ করুন</button>'+
  '<div class="cfg '+(c?"g1":"g2")+'">'+(c?"":cfTop("bad","ছাল বাদ (ইঞ্চি)",cf.bad))+cfTop(c?"cr":"rr","প্রতি CFT দর (৳)",c?cf.cr:cf.rr)+'</div>'+
  '<div class="cfs" data-sub="'+s+'"></div></div>'}
-function cfRender(){$("cfbody").innerHTML=cfSec("c")+cfSec("r")+'<div class="ares cfres" id="cfres" hidden></div><button class="cfclr" data-act="cfreset">সব মুছুন</button>';cfUpdate()}
+function cfRender(){var tb=$("cftabs").children;for(var k=0;k<tb.length;k++)tb[k].classList.toggle("on",tb[k].dataset.ctab===cf.tab);
+ $("cfbody").innerHTML=cfSec(cf.tab)+'<div class="ares cfres" id="cfres" hidden></div><button class="cfclr" data-act="cfreset">সব মুছুন</button>';cfUpdate()}
 function cfUnit(u){return u==="hat"?"হাত":"ফুট"}
 function cfUpdate(){
  var R={c:{cft:0,n:0,rows:[]},r:{cft:0,n:0,rows:[]}};
@@ -1028,7 +1077,8 @@ function cfUpdate(){
  ["c","r"].forEach(function(s){
   var c=s==="c",rate=cfPn(c?cf.cr:cf.rr),u=c?cf.cu:cf.ru,rows=c?cf.c:cf.r;
   R[s].rows.forEach(function(x,i){var el=document.querySelector('[data-rv="'+s+':'+i+'"]');if(el)el.textContent=x===null?"":"= "+cfF(x,2)+" CFT"});
-  var sb=document.querySelector('[data-sub="'+s+'"]');
+  var sb=document.querySelector('[data-sub="'+s+'"]'),ts=document.querySelector('[data-ts="'+s+'"]');
+  if(ts)ts.textContent=R[s].n?cfF(R[s].cft,2)+" CFT":"";
   if(R[s].n){var sp=rate>0?R[s].cft*rate:0;price+=sp;
    if(sb)sb.innerHTML='<span>মোট</span><span>'+cfF(R[s].cft,2)+' CFT'+(rate>0?' • ৳ '+cfF(sp,2):'')+'</span>';
    lines.push((c?"চিরাই কাঠ":"গোল কাঠ")+": "+cfF(R[s].cft,2)+" CFT"+(rate>0?" × ৳ "+cfF(rate,2)+" = ৳ "+cfF(sp,2):""));
@@ -1068,6 +1118,7 @@ $("tm").addEventListener("input",function(e){var el=e.target;if(!el.dataset||!el
  if(el.dataset.t)cf[el.dataset.t]=y;else{var a=cf[el.dataset.s];if(a&&a[+el.dataset.i])a[+el.dataset.i][el.dataset.f]=y}
  cfSave();cfUpdate()});
 $("tm").addEventListener("click",function(e){var t=e.target,b;
+ if((b=t.closest("[data-ctab]"))){cf.tab=b.dataset.ctab;cfSave();cfRender();$("tm").scrollTop=0;return}
  if((b=t.closest("[data-cu]"))){var p=b.dataset.cu.split(":");cf[p[0]==="c"?"cu":"ru"]=p[1];cfSave();cfRender();return}
  if((b=t.closest("[data-cadd]"))){var s=b.dataset.cadd,a=cf[s];if(a.length>=60){toast("সর্বোচ্চ "+conv("60")+"টি সারি");return}
   a.push(s==="c"?{l:"",w:"",t:"",n:""}:{l:"",g:"",n:""});cfSave();cfRender();
@@ -1087,10 +1138,114 @@ document.addEventListener("click",function(e){if(e.target.closest("#menu [data-m
 var _abCF=applyBn;applyBn=function(){_abCF();cfRender()};
 cfRender();
 
+/* ===== কাপড়ের হিসাব (গজ-গিরা) ===== */
+var CLK="calc_cl",cl={t:2,d:[{r:[{a:"",b:"",p:"",q:""}],rate:""},{r:[{a:"",b:"",p:"",q:""}],rate:""},{r:[{a:"",b:"",p:"",q:""}],rate:""}]},clOut="",clHE="",clHR="",clHX="",clHU="",clRst=0,clRstT=null;
+function clRows(a){if(!Array.isArray(a)||!a.length)return null;return a.slice(0,60).map(function(o){if(typeof o==="string")return {a:o.slice(0,20),b:"",p:"",q:""};return {a:(o&&typeof o.a==="string")?o.a.slice(0,20):"",b:(o&&typeof o.b==="string")?o.b.slice(0,20):"",p:(o&&typeof o.p==="string")?o.p.slice(0,20):"",q:(o&&typeof o.q==="string")?o.q.slice(0,20):""}})}
+(function(){try{var v=JSON.parse(load(CLK)||"null");if(!v||typeof v!=="object")return;
+ if(v.t===0||v.t===1||v.t===2)cl.t=v.t;
+ if(Array.isArray(v.d)){for(var k=0;k<3;k++){var o=v.d[k];if(o){var r=clRows(o.r);if(r)cl.d[k].r=r;if(typeof o.rate==="string")cl.d[k].rate=o.rate.slice(0,20)}}}
+ else{var r0=clRows(v.r);if(r0)cl.d[0].r=r0;if(typeof v.rate==="string")cl.d[0].rate=v.rate.slice(0,20)}}catch(e){}})();
+(function(){var p=document.createElement("div");p.className="clpanel";p.id="cl";
+ p.innerHTML='<div class="ahead"><button class="aback" id="clback" aria-label="ক্যালকুলেটর"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><div class="atitle">কাপড়ের হিসাব</div></div>'+
+ '<div class="cltabs" id="cltabs"><button data-tab="2">গজ-গিরা<br>→ ইঞ্চি</button><button data-tab="1">গিরা<br>→ গজ-গিরা</button><button data-tab="0">ইঞ্চি<br>→ গজ-গিরা</button></div><div id="clbody"></div>';
+ $("app").appendChild(p)})();
+var CLT=[{title:"ইঞ্চি থেকে গজ-গিরা",hint:"১ গজ = 36 ইঞ্চি = 16 গিরা<br>১ গিরা = 2.25 ইঞ্চি"},
+ {title:"গিরা থেকে গজ-গিরা",hint:"১ গজ = 16 গিরা"},
+ {title:"গজ-গিরা থেকে ইঞ্চি",hint:"১ গজ = 36 ইঞ্চি<br>১ গিরা = 2.25 ইঞ্চি"}];
+function clInt(n){return conv(fmtNum(String(n)))}
+function clSplit(x){var u=Math.round(x*100),g=Math.floor(u/3600),r=u-g*3600,gi=Math.floor(r/225),ic=r-gi*225;return {g:g,gi:gi,ic:ic/100,r:r}}
+function clTxt(x){var s=clSplit(x),p=[];
+ if(s.g)p.push(clInt(s.g)+" গজ");if(s.gi)p.push(clInt(s.gi)+" গিরা");if(s.ic>0)p.push(cfF(s.ic,2)+" ইঞ্চি");
+ return p.length?p.join(" "):conv("0")+" ইঞ্চি"}
+function clNear(x){var s=clSplit(x);if(!(s.ic>0))return "";var g=s.g,gi=Math.round(s.r/225);if(gi>=16){g++;gi=0}
+ var p=[];if(g)p.push(clInt(g)+" গজ");if(gi)p.push(clInt(gi)+" গিরা");return p.length?"প্রায় "+p.join(" "):""}
+function clGTxt(x){var u=Math.round(x*100),g=Math.floor(u/1600),r=u-g*1600,p=[];
+ if(g)p.push(clInt(g)+" গজ");if(r>0)p.push(cfF(r/100,2)+" গিরা");return p.length?p.join(" "):conv("0")+" গিরা"}
+function clVal(row,t){var a=cfPn(row.a),b=cfPn(row.b);
+ if(t<2)return (a>0&&a<1e7)?a:null;
+ var x=(isNaN(a)?0:a)*36+(isNaN(b)?0:b)*2.25;
+ return (!(isNaN(a)&&isNaN(b))&&x>0&&x<1e7)?x:null}
+function clRowTxt(x,t){return t===0?clTxt(x):t===1?clGTxt(x):cfF(x,2)+" ইঞ্চি"}
+function clSrc(row,t){var a=conv(toEn(row.a)),b=conv(toEn(row.b));
+ if(t===0)return a+" ইঞ্চি";if(t===1)return a+" গিরা";
+ var p=[];if(String(row.a).trim()!=="")p.push(a+" গজ");if(String(row.b).trim()!=="")p.push(b+" গিরা");return p.join(" ")}
+function clIn(i,f,lab,v,m){m=m||"d";return '<label>'+lab+'<input type="text" inputmode="'+(m==="i"?"numeric":"decimal")+'" autocomplete="off" data-n="'+m+'" data-ri="'+i+'" data-rf="'+f+'"'+(f==="q"?' placeholder="'+conv("1")+'"':'')+' value="'+cfEsc(conv(toEn(v)))+'"></label>'}
+function clRow(i,row,t){
+ var q=clIn(i,"q","পিস",row.q,"i"),rin=clIn(i,"p","দর (৳)",row.p),
+ inp=t===2?'<div class="cfg g4c">'+clIn(i,"a","গজ",row.a)+clIn(i,"b","গিরা",row.b)+q+rin+'</div>':'<div class="cfg g3c">'+clIn(i,"a",t===0?"ইঞ্চি":"গিরা",row.a)+q+rin+'</div>';
+ return '<div class="cfr"><div class="cfrh"><span>'+conv(i+1)+' নং</span><span class="cfrv" data-cv="'+i+'"></span><button class="cfdel" data-cdel="'+i+'" aria-label="সারি মুছুন">'+TRASH+'</button></div>'+inp+'<div class="clrp" data-cp="'+i+'"></div></div>'}
+function clRender(){
+ var t=cl.t,D=cl.d[t],tb=$("cltabs").children;
+ for(var k=0;k<3;k++)tb[k].classList.toggle("on",+tb[k].dataset.tab===t);
+ $("clbody").innerHTML='<div class="cfc"><div class="cfh"><b>'+CLT[t].title+'</b></div><div class="cfhint">'+conv(CLT[t].hint)+'</div>'+
+ D.r.map(function(r,i){return clRow(i,r,t)}).join("")+
+ '<button class="cfadd" data-cadd="1">+ আরেকটা যোগ করুন</button>'+
+ '<div class="cfg g1"><label>সব পিসের দর (৳/গজ) — আলাদা না দিলে এটা ধরা হবে<input type="text" inputmode="decimal" autocomplete="off" data-n="d" data-rate="1" value="'+cfEsc(conv(toEn(D.rate)))+'"></label></div></div>'+
+ '<div class="ares cfres" id="clres" hidden></div>'+
+ '<button class="cfclr" data-act="clreset">এই হিসাব মুছুন</button>';
+ clUpdate()}
+function clUpdate(){
+ var t=cl.t,D=cl.d[t],tot=0,n=0,price=0,anyP=false,vals=[],lines=[],gr=cfPn(D.rate),ph=gr>0?conv(toEn(D.rate)):"";
+ [].forEach.call(document.querySelectorAll('#cl [data-rf="p"]'),function(el){el.placeholder=ph});
+ D.r.forEach(function(row,i){var x1=clVal(row,t),n1=cfNn(row.q),el=document.querySelector('[data-cv="'+i+'"]'),pe=document.querySelector('[data-cp="'+i+'"]');
+  if(x1!==null&&n1>0&&n1<=1e6){var x=x1*n1,pc=n1>1?" × "+conv(n1)+" পিস":"";
+   tot+=x;n++;vals.push({row:row,n:n1});var rt=clRowTxt(x,t),rr=cfPn(row.p);if(!(rr>0))rr=gr>0?gr:0;
+   var line=conv(n)+") "+clSrc(row,t)+pc+" = "+rt;
+   if(rr>0){var pr=(t===1?x/16:x/36)*rr;price+=pr;anyP=true;line+=", দর ৳ "+cfF(rr,2)+" = ৳ "+cfF(pr,2);
+    if(pe)pe.innerHTML='<span>দাম (৳ '+cfF(rr,2)+' প্রতি গজ'+pc+')</span><span>৳ '+cfF(pr,2)+'</span>'}
+   else if(pe)pe.innerHTML="";
+   lines.push(line);if(el)el.textContent="= "+(n1>1?conv(n1)+" পিস = ":"")+rt}
+  else{if(el)el.textContent="";if(pe)pe.innerHTML=""}});
+ var box=$("clres");clOut="";clHE="";clHR="";clHX="";clHU="";
+ if(!n){box.hidden=true;box.innerHTML="";return}
+ var big=clRowTxt(tot,t),near=t===0?clNear(tot):"",stat="";
+ if(t===0)stat="মোট "+cfF(tot,2)+" ইঞ্চি • "+cfF(tot/36,3)+" গজ • "+cfF(tot/12,2)+" ফুট • "+cfF(tot*0.0254,3)+" মিটার";
+ else if(t===1)stat="মোট "+cfF(tot,2)+" গিরা • "+cfF(tot/16,3)+" গজ • "+cfF(tot*2.25,2)+" ইঞ্চি";
+ var out=["কাপড়ের হিসাব"].concat(lines);
+ out.push("");
+ if(t===2){out.push("মোট: "+clTxt(tot),"মোট: "+big)}
+ else{out.push("মোট: "+big);if(near)out.push(near);
+  out.push(t===0?"মোট ইঞ্চি: "+cfF(tot,2):"মোট গিরা: "+cfF(tot,2))}
+ if(anyP)out.push("মোট দাম: ৳ "+cfF(price,2));
+ clOut=out.join("\n");
+ var hv=vals.map(function(v){return (t===2?toEn(clSrc(v.row,2)):toEn(String(v.row.a)))+(v.n>1?"×"+v.n:"")}).join("+");
+ clHE="কাপড় "+hv+(t===0?" ইঞ্চি":t===1?" গিরা":" →");clHR=String(Math.round(tot*100)/100);
+ var sb=S.bn;S.bn=false;try{clHX=t===1?clGTxt(tot):clTxt(tot)}finally{S.bn=sb}clHU=t===1?"গিরা":"ইঞ্চি";
+ var h=t===2?'<div class="clpair"><div><span>মোট</span><b>'+clTxt(tot)+'</b></div><div><span>মোট</span><b>'+big+'</b></div></div>':'<div class="tmbig">'+big+'</div>';
+ if(near)h+='<div class="tmextra" style="margin:-6px 0 6px">'+near+'</div>';
+ if(stat)h+='<div class="clstat">'+stat+'</div>';
+ if(anyP)h+='<div class="wrow stat"><span>মোট দাম</span><span>৳ '+cfF(price,2)+'</span></div>';
+ h+='<div class="cfa"><button data-act="clcopy">কপি</button><button data-act="clshare">শেয়ার</button><button class="p" data-act="clsave">সেভ</button></div>';
+ box.innerHTML=h;box.hidden=false}
+function clSave(){save(CLK,JSON.stringify(cl))}
+$("cl").addEventListener("input",function(e){var el=e.target;if(!el.dataset||!el.dataset.n)return;
+ var x=el.value,y=x.replace(el.dataset.n==="i"?/[^0-9০-৯]/g:/[^0-9০-৯.]/g,""),k=y.indexOf(".");if(k>=0)y=y.slice(0,k+1)+y.slice(k+1).replace(/\./g,"");
+ if(x!==y)el.value=y;
+ var D=cl.d[cl.t];
+ if(el.dataset.rate)D.rate=y;else if(el.dataset.ri!==undefined&&D.r[+el.dataset.ri])D.r[+el.dataset.ri][el.dataset.rf]=y;
+ clSave();clUpdate()});
+$("cl").addEventListener("click",function(e){var t=e.target,b,D=cl.d[cl.t];
+ if((b=t.closest("[data-tab]"))){cl.t=+b.dataset.tab;clSave();clRender();$("cl").scrollTop=0;return}
+ if((b=t.closest("[data-cadd]"))){if(D.r.length>=60){toast("সর্বোচ্চ "+conv("60")+"টি সারি");return}
+  D.r.push({a:"",b:"",p:"",q:""});clSave();clRender();var f=document.querySelector('[data-ri="'+(D.r.length-1)+'"][data-rf="a"]');if(f)f.focus();return}
+ if((b=t.closest("[data-cdel]"))){var i=+b.dataset.cdel;if(D.r.length>1)D.r.splice(i,1);else D.r[0]={a:"",b:"",p:"",q:""};clSave();clRender();return}
+ if((b=t.closest("[data-act]"))){var ac=b.dataset.act;
+  if(ac==="clcopy"&&clOut)copyText(clOut).then(function(ok){toast(ok?"কপি হয়েছে":"কপি করা যায়নি")});
+  else if(ac==="clshare"&&clOut)shareText(clOut);
+  else if(ac==="clsave"&&clHR){addHist(clHE,clHR,clHX,clHU);toast("হিস্ট্রিতে সেভ হয়েছে")}
+  else if(ac==="clreset"){
+   if(!clRst){clRst=1;b.textContent="নিশ্চিত? আবার চাপুন";clearTimeout(clRstT);clRstT=setTimeout(function(){clRst=0;var x=document.querySelector('[data-act="clreset"]');if(x)x.textContent="এই হিসাব মুছুন"},3000);return}
+   clRst=0;clearTimeout(clRstT);D.r=[{a:"",b:"",p:"",q:""}];D.rate="";clSave();clRender()}
+ }});
+$("clback").addEventListener("click",function(){$("app").classList.remove("clmode")});
+document.addEventListener("click",function(e){if(e.target.closest("#menu [data-m=cl]"))$("app").classList.add("clmode")});
+var _abCL=applyBn;applyBn=function(){_abCL();clRender()};
+clRender();
+
 var layers=[],skipPop=0,nativeBack=false;
 function syncLayers(){
  if(nativeBack)return;
- var op={sheet:!$("sheet").hidden,about:!$("about").hidden,hist:histOpen,age:$("app").classList.contains("agemode"),temp:$("app").classList.contains("tempmode"),wt:$("app").classList.contains("wtmode"),len:$("app").classList.contains("ltmode"),vl:$("app").classList.contains("vlmode"),db:$("app").classList.contains("dbmode"),tm:$("app").classList.contains("tmmode")};
+ var op={sheet:!$("sheet").hidden,about:!$("about").hidden,hist:histOpen,age:$("app").classList.contains("agemode"),temp:$("app").classList.contains("tempmode"),wt:$("app").classList.contains("wtmode"),len:$("app").classList.contains("ltmode"),vl:$("app").classList.contains("vlmode"),db:$("app").classList.contains("dbmode"),tm:$("app").classList.contains("tmmode"),cl:$("app").classList.contains("clmode")};
  layers=layers.filter(function(n){if(op[n])return true;try{skipPop++;history.back()}catch(e){skipPop--}return false});
  Object.keys(op).forEach(function(n){if(op[n]&&layers.indexOf(n)<0){layers.push(n);try{history.pushState({c:1},"")}catch(e){}}});
 }
@@ -1108,6 +1263,7 @@ window.addEventListener("popstate",function(){
   else if(n==="vl")$("app").classList.remove("vlmode");
   else if(n==="db")$("app").classList.remove("dbmode");
   else if(n==="tm")$("app").classList.remove("tmmode");
+  else if(n==="cl")$("app").classList.remove("clmode");
 });
 
 $("sub").insertAdjacentHTML("afterend",'<div class="sep"></div>');
@@ -1116,7 +1272,7 @@ var _fit=fit;fit=function(){_fit();updFade($("main"));updFade($("sub"))};
 ["main","sub"].forEach(function(id){$(id).addEventListener("scroll",function(){updFade(this)},{passive:true})});
 fit();
 
-document.body.insertAdjacentHTML("beforeend",'<div class="undo" id="undo" hidden><span id="utxt"></span><button id="ubtn">ফিরিয়ে আনুন</button></div><div class="pop" id="emenu" hidden><button data-e="copyr">ফলাফল কপি</button><button data-e="copyf">হিসাবসহ কপি</button><button data-e="del">মুছুন</button></div><div class="menu" id="menu" hidden><button data-m="hist"><span class="mi" style="background:linear-gradient(135deg,#ffa24a,#f5700a)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8l0 4l2 2"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"/></svg></span>হিস্ট্রি</button><button data-m="age"><span class="mi" style="background:linear-gradient(135deg,#ff7ab0,#e84a8a)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-12a2 2 0 0 1-2-2v-12z"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M4 11h16"/><path d="M11 15h1"/><path d="M12 15v3"/></svg></span>বয়সের ক্যালকুলেটর</button><button data-m="temp"><span class="mi" style="background:linear-gradient(135deg,#ff8a78,#e8432e)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M20 9a3 3 0 0 0-3-3h-1a3 3 0 0 0-3 3v6a3 3 0 0 0 3 3h1a3 3 0 0 0 3-3"/></svg></span>তাপমাত্রা রূপান্তর</button><button data-m="wt"><span class="mi" style="background:linear-gradient(135deg,#b28bff,#7a4df0)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M6 6l6-1 6 1"/><path d="M12 3v17"/><path d="M9 12l-3-6-3 6a3 3 0 0 0 6 0"/><path d="M21 12l-3-6-3 6a3 3 0 0 0 6 0"/></svg></span>ওজন রূপান্তর</button><button data-m="len"><span class="mi" style="background:linear-gradient(135deg,#5cb0ff,#2a7de8)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.875 12c.621 0 1.125 .512 1.125 1.143v5.714c0 .631 -.504 1.143 -1.125 1.143h-15.875a1 1 0 0 1 -1 -1v-5.857c0 -.631 .504 -1.143 1.125 -1.143h15.75"/><path d="M9 12v2"/><path d="M6 12v3"/><path d="M12 12v3"/><path d="M18 12v3"/><path d="M15 12v2"/><path d="M3 3v4"/><path d="M3 5h18"/><path d="M21 3v4"/></svg></span>দৈর্ঘ্য রূপান্তর</button><button data-m="vl"><span class="mi" style="background:linear-gradient(135deg,#4fd8e8,#13a6c4)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.502 19.423c2.602 2.105 6.395 2.105 8.996 0c2.602-2.105 3.262-5.708 1.566-8.546l-4.89-7.26c-.42-.625-1.287-.803-1.936-.397a1.376 1.376 0 0 0-.41.397l-4.893 7.26c-1.695 2.838-1.035 6.441 1.567 8.546z"/></svg></span>আয়তন রূপান্তর</button><button data-m="db"><span class="mi" style="background:linear-gradient(135deg,#7d8bff,#4a52e0)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6a8 3 0 1 0 16 0a8 3 0 1 0-16 0"/><path d="M4 6v6a8 3 0 0 0 16 0v-6"/><path d="M4 12v6a8 3 0 0 0 16 0v-6"/></svg></span>ডেটা রূপান্তর</button><button data-m="tm"><span class="mi" style="background:linear-gradient(135deg,#d99a5b,#9a6234)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 16 0a8 8 0 1 0-16 0"/><path d="M8.5 12a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0-7 0"/><path d="M12 12h.01"/></svg></span>কাঠের CFT হিসাব</button><button data-m="set"><span class="mi" style="background:linear-gradient(135deg,#a7acb8,#6b707c)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M4 6l8 0"/><path d="M16 6l4 0"/><path d="M8 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M4 12l2 0"/><path d="M10 12l10 0"/><path d="M17 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M4 18l11 0"/><path d="M19 18l1 0"/></svg></span>সেটিংস</button><button data-m="about"><span class="mi" style="background:linear-gradient(135deg,#8fb3c9,#4f7791)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0-18 0"/><path d="M12 9h.01"/><path d="M11 12h1v4h1"/></svg></span>অ্যাবাউট</button></div>');
+document.body.insertAdjacentHTML("beforeend",'<div class="undo" id="undo" hidden><span id="utxt"></span><button id="ubtn">ফিরিয়ে আনুন</button></div><div class="pop" id="emenu" hidden><button data-e="copyr">ফলাফল কপি</button><button data-e="copyf">হিসাবসহ কপি</button><button data-e="del">মুছুন</button></div><div class="menu" id="menu" hidden><button data-m="hist"><span class="mi" style="background:linear-gradient(135deg,#ffa24a,#f5700a)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8l0 4l2 2"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"/></svg></span>হিস্ট্রি</button><button data-m="cl"><span class="mi" style="background:linear-gradient(135deg,#5fe08a,#22b455)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4l6 2v5h-3v8a1 1 0 0 1-1 1h-10a1 1 0 0 1-1-1v-8h-3v-5l6-2a3 3 0 0 0 6 0"/></svg></span>কাপড়ের হিসাব (গজ-গিরা)</button><button data-m="age"><span class="mi" style="background:linear-gradient(135deg,#ff7ab0,#e84a8a)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-12a2 2 0 0 1-2-2v-12z"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M4 11h16"/><path d="M11 15h1"/><path d="M12 15v3"/></svg></span>বয়সের ক্যালকুলেটর</button><button data-m="temp"><span class="mi" style="background:linear-gradient(135deg,#ff8a78,#e8432e)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M20 9a3 3 0 0 0-3-3h-1a3 3 0 0 0-3 3v6a3 3 0 0 0 3 3h1a3 3 0 0 0 3-3"/></svg></span>তাপমাত্রা রূপান্তর</button><button data-m="wt"><span class="mi" style="background:linear-gradient(135deg,#b28bff,#7a4df0)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M6 6l6-1 6 1"/><path d="M12 3v17"/><path d="M9 12l-3-6-3 6a3 3 0 0 0 6 0"/><path d="M21 12l-3-6-3 6a3 3 0 0 0 6 0"/></svg></span>ওজন রূপান্তর</button><button data-m="len"><span class="mi" style="background:linear-gradient(135deg,#5cb0ff,#2a7de8)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.875 12c.621 0 1.125 .512 1.125 1.143v5.714c0 .631 -.504 1.143 -1.125 1.143h-15.875a1 1 0 0 1 -1 -1v-5.857c0 -.631 .504 -1.143 1.125 -1.143h15.75"/><path d="M9 12v2"/><path d="M6 12v3"/><path d="M12 12v3"/><path d="M18 12v3"/><path d="M15 12v2"/><path d="M3 3v4"/><path d="M3 5h18"/><path d="M21 3v4"/></svg></span>দৈর্ঘ্য রূপান্তর</button><button data-m="vl"><span class="mi" style="background:linear-gradient(135deg,#4fd8e8,#13a6c4)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.502 19.423c2.602 2.105 6.395 2.105 8.996 0c2.602-2.105 3.262-5.708 1.566-8.546l-4.89-7.26c-.42-.625-1.287-.803-1.936-.397a1.376 1.376 0 0 0-.41.397l-4.893 7.26c-1.695 2.838-1.035 6.441 1.567 8.546z"/></svg></span>আয়তন রূপান্তর</button><button data-m="db"><span class="mi" style="background:linear-gradient(135deg,#7d8bff,#4a52e0)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6a8 3 0 1 0 16 0a8 3 0 1 0-16 0"/><path d="M4 6v6a8 3 0 0 0 16 0v-6"/><path d="M4 12v6a8 3 0 0 0 16 0v-6"/></svg></span>ডেটা রূপান্তর</button><button data-m="tm"><span class="mi" style="background:linear-gradient(135deg,#d99a5b,#9a6234)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 16 0a8 8 0 1 0-16 0"/><path d="M8.5 12a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0-7 0"/><path d="M12 12h.01"/></svg></span>কাঠের CFT হিসাব</button><button data-m="set"><span class="mi" style="background:linear-gradient(135deg,#a7acb8,#6b707c)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M4 6l8 0"/><path d="M16 6l4 0"/><path d="M8 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M4 12l2 0"/><path d="M10 12l10 0"/><path d="M17 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M4 18l11 0"/><path d="M19 18l1 0"/></svg></span>সেটিংস</button><button data-m="about"><span class="mi" style="background:linear-gradient(135deg,#8fb3c9,#4f7791)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0-18 0"/><path d="M12 9h.01"/><path d="M11 12h1v4h1"/></svg></span>অ্যাবাউট</button></div>');
 $("main").insertAdjacentHTML("afterend",'<div class="hhandle" id="hhandle"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></div>');
 var histT=null,undoT=null,undoData=null,emIdx=-1,lpT=null,lpX=0,lpY=0,lpFired=false;
 toggleHist=function(){
@@ -1194,7 +1350,7 @@ function clearAllAnim(){
 $("emenu").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;$("emenu").hidden=true;var it=hist[emIdx];if(!it)return;
  if(b.dataset.e==="del"){delHist(emIdx);return}
  var rv=String(it.r).replace("\u2212","-");
- var txt=b.dataset.e==="copyr"?rv:conv(fmtExpr(it.e)+" = "+fmtVal(parseFloat(rv)));
+ var txt=b.dataset.e==="copyr"?rv:conv(fmtExpr(it.e)+" = "+(it.x?it.x+" = ":"")+fmtVal(parseFloat(rv))+(it.u?" "+it.u:""));
  copyText(txt).then(function(ok){toast(ok?"কপি হয়েছে":"কপি করা যায়নি")})});
 var menuT=0,MKF={fast:.6,normal:1,slow:1.6};
 function menuK(){return MKF[S.mk]||1}
