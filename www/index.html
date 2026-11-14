@@ -35,12 +35,12 @@ button:focus-visible{outline:2px solid var(--acc);outline-offset:-3px}
 .hist{flex:1;min-height:0;overflow-y:auto;margin:4px -22px 6px;scrollbar-width:none;touch-action:pan-y}
 .hist::-webkit-scrollbar{display:none}
 .hw{position:relative;padding:0 16px 14px}
-.hhd{position:sticky;top:0;z-index:3;display:flex;align-items:center;justify-content:space-between;height:40px;background:var(--panel);padding:0 2px}
-.hhd b{font-size:18px;font-weight:600}
+.hhd{position:sticky;top:0;z-index:3;display:flex;align-items:center;justify-content:space-between;height:34px;background:var(--panel);padding:0 2px}
+.hhd b{font-size:17px;font-weight:600}
 .hhd b span{font-size:13px;color:var(--dim);font-weight:400;margin-left:8px}
-.hclr{width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:var(--m);color:#ff6b5e;border-radius:11px;border:1px solid var(--line);padding:0}
-.hclr svg{width:18px;height:18px}
-.hgl{position:sticky;top:40px;z-index:2;background:var(--panel);color:var(--acc);font-size:13px;font-weight:600;padding:14px 2px 10px;display:flex;align-items:center;gap:10px}
+.hclr{width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:var(--m);color:#ff6b5e;border-radius:11px;border:1px solid var(--line);padding:0}
+.hclr svg{width:16px;height:16px}
+.hgl{position:sticky;top:var(--hy);z-index:2;background:var(--panel);color:var(--acc);font-size:13px;font-weight:600;padding:10px 2px 8px;display:flex;align-items:center;gap:10px}
 .hgl::after{content:"";flex:1;height:1px;background:var(--line)}
 .hsw{position:relative;border-radius:14px;overflow:hidden;margin-bottom:8px;touch-action:pan-y}
 .sdel{position:absolute;left:0;top:0;right:0;bottom:0;display:flex;align-items:center;justify-content:flex-end;padding:0 26px 0 0;background:#e8432e;color:#fff;border-radius:14px;opacity:0;transition:opacity .1s}
@@ -53,10 +53,10 @@ button:focus-visible{outline:2px solid var(--acc);outline-offset:-3px}
 .hsw.clr .ent{transform:translateX(-110%)!important;opacity:0;transition:transform .26s ease-in,opacity .26s ease-in}
 .hhd.fade,.hgl.fade{opacity:0;transition:opacity .22s ease}
 @media (prefers-reduced-motion:reduce){.ent,.hsw.rm,.hsw.clr .ent{transition:none}}
-.hm{display:flex;align-items:baseline;justify-content:space-between;gap:10px;font-size:12px;color:var(--dim)}
-.hm .t{opacity:.75;flex:none}
-.hm .he{flex:1;min-width:0;text-align:right;font-size:15px;word-break:break-all}
-.hr{text-align:right;font-size:22px;color:var(--acc);word-break:break-all;line-height:1.2}
+.hm{display:flex;align-items:baseline;justify-content:space-between;gap:10px;font-size:13px;font-weight:400;color:var(--dim);color:color-mix(in srgb,var(--txt) 72%,var(--m))}
+.hm .t{opacity:1;flex:none;font-weight:400}
+.hm .he{flex:1;min-width:0;text-align:right;font-size:16px;font-weight:500;color:var(--dim);color:color-mix(in srgb,var(--txt) 86%,var(--m));word-break:break-all}
+.hr{text-align:right;font-size:22px;font-weight:700;color:var(--acc);word-break:break-all;line-height:1.2}
 .hempty{padding:40px 30px;text-align:center;color:var(--dim)}
 .hempty svg{display:block;width:44px;height:44px;margin:0 auto 10px;opacity:.5}
 .hempty small{display:block;margin-top:4px;font-size:12px;opacity:.7}
@@ -324,6 +324,29 @@ button{transition:background .25s}
 .undo button{font-size:15px;padding:9px 14px;background:transparent;color:var(--acc);font-weight:600;border-radius:18px}
 
 .hhandle svg{transform:rotate(180deg);transition:transform .3s ease}
+
+/* v11: history uses the top-bar row */
+.top{transition:height .3s ease}
+.hopen .top{height:0;overflow:hidden}
+.hopen .hist{margin-top:0}
+@media (prefers-reduced-motion:reduce){.top{transition:none}}
+/* v10: menu icon fade + history edge fade */
+@property --ta{syntax:'<number>';inherits:false;initial-value:1}
+@property --ba{syntax:'<number>';inherits:false;initial-value:1}
+@property --ft{syntax:'<length>';inherits:true;initial-value:68px}
+@property --hy{syntax:'<length>';inherits:true;initial-value:34px}
+#mbtn{transition:opacity .26s ease,transform .26s ease,visibility 0s}
+.hopen #mbtn{opacity:0;transform:scale(.7);visibility:hidden;pointer-events:none;transition:opacity .26s ease,transform .26s ease,visibility 0s .26s}
+.hist{--ft:68px;--hy:34px;--ta:1;--ba:1;transition:--ta .22s ease,--ba .22s ease,--ft .22s ease,--hy .22s ease;
+-webkit-mask-image:linear-gradient(to bottom,#000 calc(var(--ft) - 3px),rgba(0,0,0,var(--ta)) calc(var(--ft) - 3px),rgba(0,0,0,var(--ta)) calc(var(--ft) + 10px),#000 calc(var(--ft) + 24px),#000 calc(100% - 14px),rgba(0,0,0,var(--ba)) 100%);
+mask-image:linear-gradient(to bottom,#000 calc(var(--ft) - 3px),rgba(0,0,0,var(--ta)) calc(var(--ft) - 3px),rgba(0,0,0,var(--ta)) calc(var(--ft) + 10px),#000 calc(var(--ft) + 24px),#000 calc(100% - 14px),rgba(0,0,0,var(--ba)) 100%)}
+.hist.hh{--hy:0px}
+.hhd{transition:transform .22s ease}
+.hist.hh .hhd{transform:translateY(-102%);pointer-events:none}
+.hhd b{display:inline-flex;align-items:center;height:30px;padding:0 12px;background:var(--m);border:1px solid var(--line);border-radius:11px}
+.hhd b span{margin-left:8px}
+@media (prefers-reduced-motion:reduce){#mbtn,.hopen #mbtn,.hist,.hhd{transition:none}}
+
 .hopen .hhandle svg{transform:none}
 .hhandle{width:100%}
 .menu button{display:flex;align-items:center;gap:14px}
@@ -541,7 +564,7 @@ function dayLabel(d){
 function renderHist(){
   var h=document.getElementById("hist"),s='<div class="hw">';
   if(!hist.length)s+='<div class="hempty">'+CLOCK+'এখনো কোনো হিসাব নেই<small>= চাপলে হিসাব এখানে জমা হবে</small></div>';
-  else s+='<div class="hhd"><b>হিস্ট্রি<span>'+hist.length+'টি হিসাব</span></b><button class="hclr" data-clr="1" aria-label="সব হিস্ট্রি মুছুন">'+TRASH+'</button></div>';
+  else s+='<div class="hhd"><b>হিস্ট্রি<span>'+hist.length+' টি হিসাব</span></b><button class="hclr" data-clr="1" aria-label="সব হিস্ট্রি মুছুন">'+TRASH+'</button></div>';
   var lastKey="",open=false;
   hist.forEach(function(it,i){
     var d=new Date(it.t),key=d.getFullYear()+"-"+d.getMonth()+"-"+d.getDate();
@@ -1193,6 +1216,23 @@ function goBackOne(){
 
 var APP_VERSION="1.2";
 (function(){var sp=$("splash");if(sp)sp.addEventListener("pointerdown",function(){sp.classList.add("skip")})})();
+
+/* v10: history edge fade */
+var hLast=0,hAcc=0;
+function histFade(){var h=$("hist");if(!h||h.hidden)return;
+ var hd=h.querySelector(".hhd"),gl=h.querySelector(".hgl"),mx=h.scrollHeight-h.clientHeight,st=h.scrollTop,hid=h.classList.contains("hh");
+ h.style.setProperty("--ft",(hd?(hid?0:hd.offsetHeight)+(gl?gl.offsetHeight:0):0)+"px");
+ h.style.setProperty("--ta",(hd&&st>2)?0:1);
+ h.style.setProperty("--ba",st<mx-2?0:1)}
+function hdrAuto(){var h=$("hist");if(!h||h.hidden)return;var hd=h.querySelector(".hhd");
+ var st=h.scrollTop,mx=h.scrollHeight-h.clientHeight,d=st-hLast;hLast=st;
+ if(hd){if(d*hAcc<0)hAcc=0;hAcc+=d;var hid=h.classList.contains("hh");
+  if(st<=4||st>=mx-4||hAcc>14){if(hid)h.classList.remove("hh")}
+  else if(hAcc<-14){if(!hid)h.classList.add("hh")}}
+ histFade()}
+var _rh2=renderHist;renderHist=function(){_rh2();var h=$("hist");if(h){h.classList.remove("hh");hLast=h.scrollTop;hAcc=0}histFade()};
+$("hist").addEventListener("scroll",hdrAuto,{passive:true});
+window.addEventListener("resize",histFade);
 </script>
 </body>
 </html>
