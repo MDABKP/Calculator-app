@@ -35,7 +35,7 @@ button:focus-visible{outline:2px solid var(--acc);outline-offset:-3px}
 .hist{flex:1;min-height:0;overflow-y:auto;margin:4px -22px 6px;scrollbar-width:none;touch-action:pan-y}
 .hist::-webkit-scrollbar{display:none}
 .hw{position:relative;padding:0 16px 14px}
-.hhd{position:sticky;top:0;z-index:3;display:flex;align-items:center;justify-content:space-between;box-sizing:border-box;height:40px;background:var(--panel);padding:0 2px 6px}
+.hhd{position:sticky;top:0;z-index:3;display:block;box-sizing:border-box;height:62px;background:var(--panel);padding:0 2px}
 .hhd b{font-size:15px;font-weight:600}
 .hhd b span{font-size:13px;color:var(--dim);font-weight:400;margin-left:8px}
 .hclr{width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:var(--m);color:#ff6b5e;border-radius:11px;border:1px solid var(--line);padding:0}
@@ -328,7 +328,7 @@ button{transition:background .25s}
 /* v11: history uses the top-bar row */
 .top{transition:height .3s ease}
 .hopen .top{height:0;overflow:hidden}
-.hopen .hist{margin-top:0}
+.hopen .hist{margin-top:-6px}
 @media (prefers-reduced-motion:reduce){.top{transition:none}}
 /* v10: menu icon fade + history edge fade */
 @property --ta{syntax:'<number>';inherits:false;initial-value:1}
@@ -532,7 +532,7 @@ html[data-theme=light] .af input[type=time]{color-scheme:light}
 .hclr{position:relative;flex:none}
 .hclr.hon{background:#e8432e;color:#fff;border-color:#e8432e}
 .hclr.hdim{opacity:.45}
-.hcnt{position:absolute;bottom:-6px;right:-6px;min-width:18px;height:18px;padding:0 4px;box-sizing:border-box;border-radius:9px;background:#fff;color:#e8432e;font-size:11px;font-weight:600;line-height:18px;font-style:normal;text-align:center;box-shadow:0 0 0 1.5px #e8432e}
+.hcnt{position:absolute;top:0;right:-5px;min-width:18px;height:18px;padding:0 4px;box-sizing:border-box;border-radius:9px;background:#fff;color:#e8432e;font-size:11px;font-weight:600;line-height:18px;font-style:normal;text-align:center;box-shadow:0 0 0 1.5px #e8432e}
 .hsw.selm .ent{padding-left:46px}
 .hck{position:absolute;left:14px;top:50%;margin-top:-11px;width:22px;height:22px;box-sizing:border-box;border:2px solid var(--dim);border-radius:7px}
 .hsw.sel .hck{background:var(--acc);border-color:var(--acc)}
@@ -548,6 +548,24 @@ html[data-theme=light] .af input[type=time]{color-scheme:light}
 /* v25: ছোট ভাসমান বার */
 .hchip{flex:0 1 auto;min-width:0;max-width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;height:26px;line-height:26px;padding:0 10px;border-radius:10px;background:var(--m);color:var(--acc);font-size:13px;font-weight:600}
 .hchip[hidden]{display:none}
+
+/* v27: দুই লাইনের একটাই বার */
+.hhd b,.hclr,.hsb{box-sizing:border-box}
+.hrow{display:flex;align-items:center;justify-content:space-between;height:36px}
+.hdt{display:flex;align-items:center;justify-content:space-between;height:26px;line-height:26px;font-size:13.5px;font-weight:600;color:var(--acc);padding:0}
+.hdl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdt::after{content:"";order:1;flex:1;height:1px;margin-left:10px;background:var(--line)}
+.hdt:not([data-g])::after{display:none}
+.hdt .hgk{order:2;margin-left:10px}
+button.hico{position:relative;padding:0;border:0;cursor:pointer}
+button.hico::before{content:"";position:absolute;inset:-5px}
+button.hico:active{filter:brightness(.88);transform:scale(.94)}
+.hdt .hgk{width:16px;height:16px;border-radius:5px;border-width:1.5px}
+.hdt:not([data-g]) .hgk{display:none}
+.hdt.sel .hgk{background:var(--acc);border-color:var(--acc)}
+.hdt.sel .hgk::after{content:"";position:absolute;left:4px;top:0;width:4px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.hdt.part .hgk{border-color:var(--acc)}
+.hdt.part .hgk::after{content:"";position:absolute;left:3px;right:3px;top:5px;height:2px;background:var(--acc)}
 </style>
 </head>
 <body>
@@ -663,17 +681,18 @@ function dayLabel(d){
 var selMode=false,selSet=new Set(),cfmAct="all";
 var CLKI='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8l0 4l2 2"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"/></svg>';
 function hdrHtml(){
-  var ico='<span class="hico">'+CLKI+'</span>';
-  if(!selMode)return '<div class="hl">'+ico+'<b>আগের হিসাব<span>'+conv(hist.length)+' টি</span></b><span class="hchip" hidden></span></div><button class="hclr" data-clr="1" aria-label="নির্বাচন করে মুছুন">'+TRASH+'</button>';
+  var ico='<button class="hico" data-home="1" aria-label="ক্যালকুলেটরে ফিরুন">'+CLKI+'</button>',dt='<div class="hdt"><span class="hdl"></span>'+(selMode?'<span class="hgk"></span>':'')+'</div>';
+  if(!selMode)return '<div class="hrow"><div class="hl">'+ico+'<b>আগের হিসাব<span>'+conv(hist.length)+' টি</span></b></div><button class="hclr" data-clr="1" aria-label="নির্বাচন করে মুছুন">'+TRASH+'</button></div>'+dt;
   var n=selSet.size;
-  return '<div class="hl">'+ico+'<b><span style="margin:0;color:inherit;font-size:14px;font-weight:600">'+conv(n)+' টি নির্বাচিত</span></b><button class="hsb" data-sa="1">'+(n===hist.length?'বাদ':'সব')+'</button><button class="hsb" data-sx="1">বাতিল</button></div><button class="hclr hon'+(n?'':' hdim')+'" data-clr="1" aria-label="নির্বাচিত মুছুন">'+TRASH+(n?'<i class="hcnt">'+conv(n)+'</i>':'')+'</button>'}
+  return '<div class="hrow"><div class="hl">'+ico+'<b><span style="margin:0;color:inherit;font-size:14px;font-weight:600">'+conv(n)+' টি নির্বাচিত</span></b><button class="hsb" data-sa="1">'+(n===hist.length?'বাদ':'সব')+'</button><button class="hsb" data-sx="1">বাতিল</button></div><button class="hclr hon'+(n?'':' hdim')+'" data-clr="1" aria-label="নির্বাচিত মুছুন">'+TRASH+(n?'<i class="hcnt">'+conv(n)+'</i>':'')+'</button></div>'+dt}
+function grpSt(g){var h=document.getElementById("hist"),all=[].slice.call(h.querySelectorAll('.hsw[data-g="'+g+'"] .ent')),n=all.filter(function(e){return selSet.has(+e.dataset.i)}).length;return {sel:all.length>0&&n===all.length,part:n>0&&n<all.length}}
 function enterSel(){if(!hist.length)return;selMode=true;selSet=new Set();keepScroll(renderHist)}
 function exitSel(){if(!selMode)return;selMode=false;selSet=new Set();keepScroll(renderHist)}
 function updSel(){var h=document.getElementById("hist");
   [].forEach.call(h.querySelectorAll(".hsw"),function(sw){var e=sw.querySelector(".ent");sw.classList.toggle("sel",!!e&&selSet.has(+e.dataset.i))});
   [].forEach.call(h.querySelectorAll(".hgl[data-g]"),function(g){var all=[].slice.call(h.querySelectorAll('.hsw[data-g="'+g.dataset.g+'"] .ent')),n=all.filter(function(e){return selSet.has(+e.dataset.i)}).length;
     g.classList.toggle("sel",all.length>0&&n===all.length);g.classList.toggle("part",n>0&&n<all.length)});
-  var hd=h.querySelector(".hhd");if(hd)hd.innerHTML=hdrHtml()}
+  var hd=h.querySelector(".hhd");if(hd){hd.innerHTML=hdrHtml();chipUpd()}}
 function selToggle(i){if(selSet.has(i))selSet.delete(i);else selSet.add(i);updSel()}
 function selGroup(g){var h=document.getElementById("hist"),ids=[].map.call(h.querySelectorAll('.hsw[data-g="'+g+'"] .ent'),function(e){return +e.dataset.i}),all=ids.every(function(i){return selSet.has(i)});
   ids.forEach(function(i){if(all)selSet.delete(i);else selSet.add(i)});updSel()}
@@ -708,6 +727,8 @@ function toggleHist(){
 }
 document.getElementById("hbtn").addEventListener("click",function(){toggleHist()});
 document.getElementById("hist").addEventListener("click",function(e){
+  if(e.target.closest("[data-home]")){if(selMode)exitSel();else toggleHist();return}
+  var hd0=e.target.closest(".hdt[data-g]");if(selMode&&hd0){selGroup(+hd0.dataset.g);return}
   if(e.target.closest("[data-clr]")){if(!selMode){enterSel();return}if(selSet.size)delSel();return}
   if(e.target.closest("[data-sa]")){selAllToggle();return}
   if(e.target.closest("[data-sx]")){exitSel();return}
@@ -1004,14 +1025,14 @@ document.addEventListener("click",function(e){if(e.target.closest("#menu [data-m
 var _abL=applyBn;applyBn=function(){_abL();lLabels();var el=$("lv");if(el.value!=="")el.value=conv(toEn(el.value));lCalc()};
 lLabels();
 
-/* ===== আয়তন রূপান্তর ===== */
+/* ===== তরল রূপান্তর ===== */
 var VLU=[["ml","মিলিলিটার",0.001],["tsp","চা চামচ",0.00492892159375],["tbsp","টেবিল চামচ",0.01478676478125],["cup","কাপ (US)",0.2365882365],["l","লিটার",1],["galus","গ্যালন (US)",3.785411784],["galuk","গ্যালন (UK)",4.54609],["m3","ঘনমিটার",1000]],vlUnit="l",vlG=0,vlOut="";
 function vlIdx(k){for(var i=0;i<VLU.length;i++)if(VLU[i][0]===k)return i;return -1}
 (function(){var sv=load("calc_vlunit");if(sv&&vlIdx(sv)>=0)vlUnit=sv})();
 (function(){var p=document.createElement("div");p.className="vlpanel";p.id="vlt";
  var opts=VLU.map(function(u){return '<option value="'+u[0]+'">'+u[1]+'</option>'}).join("");
- p.innerHTML='<div class="ahead"><button class="aback" id="vlback" aria-label="ক্যালকুলেটর"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><div class="atitle">আয়তন রূপান্তর</div></div>'+
- '<div class="af"><span>আয়তন লিখুন ও ইউনিট বাছুন</span><div class="ain"><input id="vlv" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><select class="wsel" id="vlu">'+opts+'</select></div></div>'+
+ p.innerHTML='<div class="ahead"><button class="aback" id="vlback" aria-label="ক্যালকুলেটর"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><div class="atitle">তরল রূপান্তর</div></div>'+
+ '<div class="af"><span>পরিমাণ লিখুন ও ইউনিট বাছুন</span><div class="ain"><input id="vlv" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><select class="wsel" id="vlu">'+opts+'</select></div></div>'+
  '<div class="terr" id="vlerr"></div><div class="ares vlres" id="vlres" hidden></div><div class="tnote" id="vlnote"></div>';
  $("app").appendChild(p);$("vlu").value=vlUnit})();
 function vlNum(s){s=toEn(s).replace(/,/g,"").trim();if(s===""||s===".")return null;if(!/^\d*\.?\d*$/.test(s))return NaN;return parseFloat(s)}
@@ -1322,7 +1343,7 @@ var _fit=fit;fit=function(){_fit();updFade($("main"));updFade($("sub"))};
 ["main","sub"].forEach(function(id){$(id).addEventListener("scroll",function(){updFade(this)},{passive:true})});
 fit();
 
-document.body.insertAdjacentHTML("beforeend",'<div class="undo" id="undo" hidden><span id="utxt"></span><button id="ubtn">ফিরিয়ে আনুন</button></div><div class="pop" id="emenu" hidden><button data-e="copyr">ফলাফল কপি</button><button data-e="copyf">হিসাবসহ কপি</button><button data-e="del">মুছুন</button></div><div class="menu" id="menu" hidden><button data-m="hist"><span class="mi" style="background:linear-gradient(135deg,#ffa24a,#f5700a)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8l0 4l2 2"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"/></svg></span>আগের হিসাব</button><button data-m="cl"><span class="mi" style="background:linear-gradient(135deg,#5fe08a,#22b455)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4l6 2v5h-3v8a1 1 0 0 1-1 1h-10a1 1 0 0 1-1-1v-8h-3v-5l6-2a3 3 0 0 0 6 0"/></svg></span>কাপড়ের হিসাব (গজ-গিরা)</button><button data-m="age"><span class="mi" style="background:linear-gradient(135deg,#ff7ab0,#e84a8a)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-12a2 2 0 0 1-2-2v-12z"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M4 11h16"/><path d="M11 15h1"/><path d="M12 15v3"/></svg></span>বয়সের ক্যালকুলেটর</button><button data-m="temp"><span class="mi" style="background:linear-gradient(135deg,#ff8a78,#e8432e)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M20 9a3 3 0 0 0-3-3h-1a3 3 0 0 0-3 3v6a3 3 0 0 0 3 3h1a3 3 0 0 0 3-3"/></svg></span>তাপমাত্রা রূপান্তর</button><button data-m="wt"><span class="mi" style="background:linear-gradient(135deg,#b28bff,#7a4df0)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M6 6l6-1 6 1"/><path d="M12 3v17"/><path d="M9 12l-3-6-3 6a3 3 0 0 0 6 0"/><path d="M21 12l-3-6-3 6a3 3 0 0 0 6 0"/></svg></span>ওজন রূপান্তর</button><button data-m="len"><span class="mi" style="background:linear-gradient(135deg,#5cb0ff,#2a7de8)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.875 12c.621 0 1.125 .512 1.125 1.143v5.714c0 .631 -.504 1.143 -1.125 1.143h-15.875a1 1 0 0 1 -1 -1v-5.857c0 -.631 .504 -1.143 1.125 -1.143h15.75"/><path d="M9 12v2"/><path d="M6 12v3"/><path d="M12 12v3"/><path d="M18 12v3"/><path d="M15 12v2"/><path d="M3 3v4"/><path d="M3 5h18"/><path d="M21 3v4"/></svg></span>দৈর্ঘ্য রূপান্তর</button><button data-m="vl"><span class="mi" style="background:linear-gradient(135deg,#4fd8e8,#13a6c4)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.502 19.423c2.602 2.105 6.395 2.105 8.996 0c2.602-2.105 3.262-5.708 1.566-8.546l-4.89-7.26c-.42-.625-1.287-.803-1.936-.397a1.376 1.376 0 0 0-.41.397l-4.893 7.26c-1.695 2.838-1.035 6.441 1.567 8.546z"/></svg></span>আয়তন রূপান্তর</button><button data-m="db"><span class="mi" style="background:linear-gradient(135deg,#7d8bff,#4a52e0)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6a8 3 0 1 0 16 0a8 3 0 1 0-16 0"/><path d="M4 6v6a8 3 0 0 0 16 0v-6"/><path d="M4 12v6a8 3 0 0 0 16 0v-6"/></svg></span>ডেটা রূপান্তর</button><button data-m="tm"><span class="mi" style="background:linear-gradient(135deg,#d99a5b,#9a6234)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 16 0a8 8 0 1 0-16 0"/><path d="M8.5 12a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0-7 0"/><path d="M12 12h.01"/></svg></span>কাঠের CFT হিসাব</button><button data-m="set"><span class="mi" style="background:linear-gradient(135deg,#a7acb8,#6b707c)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M4 6l8 0"/><path d="M16 6l4 0"/><path d="M8 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M4 12l2 0"/><path d="M10 12l10 0"/><path d="M17 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M4 18l11 0"/><path d="M19 18l1 0"/></svg></span>সেটিংস</button><button data-m="about"><span class="mi" style="background:linear-gradient(135deg,#8fb3c9,#4f7791)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0-18 0"/><path d="M12 9h.01"/><path d="M11 12h1v4h1"/></svg></span>অ্যাবাউট</button></div>');
+document.body.insertAdjacentHTML("beforeend",'<div class="undo" id="undo" hidden><span id="utxt"></span><button id="ubtn">ফিরিয়ে আনুন</button></div><div class="pop" id="emenu" hidden><button data-e="copyr">ফলাফল কপি</button><button data-e="copyf">হিসাবসহ কপি</button><button data-e="del">মুছুন</button></div><div class="menu" id="menu" hidden><button data-m="hist"><span class="mi" style="background:linear-gradient(135deg,#ffa24a,#f5700a)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8l0 4l2 2"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"/></svg></span>আগের হিসাব</button><button data-m="cl"><span class="mi" style="background:linear-gradient(135deg,#5fe08a,#22b455)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4l6 2v5h-3v8a1 1 0 0 1-1 1h-10a1 1 0 0 1-1-1v-8h-3v-5l6-2a3 3 0 0 0 6 0"/></svg></span>কাপড়ের হিসাব (গজ-গিরা)</button><button data-m="age"><span class="mi" style="background:linear-gradient(135deg,#ff7ab0,#e84a8a)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-12a2 2 0 0 1-2-2v-12z"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M4 11h16"/><path d="M11 15h1"/><path d="M12 15v3"/></svg></span>বয়সের ক্যালকুলেটর</button><button data-m="temp"><span class="mi" style="background:linear-gradient(135deg,#ff8a78,#e8432e)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M20 9a3 3 0 0 0-3-3h-1a3 3 0 0 0-3 3v6a3 3 0 0 0 3 3h1a3 3 0 0 0 3-3"/></svg></span>তাপমাত্রা রূপান্তর</button><button data-m="wt"><span class="mi" style="background:linear-gradient(135deg,#b28bff,#7a4df0)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M6 6l6-1 6 1"/><path d="M12 3v17"/><path d="M9 12l-3-6-3 6a3 3 0 0 0 6 0"/><path d="M21 12l-3-6-3 6a3 3 0 0 0 6 0"/></svg></span>ওজন রূপান্তর</button><button data-m="len"><span class="mi" style="background:linear-gradient(135deg,#5cb0ff,#2a7de8)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.875 12c.621 0 1.125 .512 1.125 1.143v5.714c0 .631 -.504 1.143 -1.125 1.143h-15.875a1 1 0 0 1 -1 -1v-5.857c0 -.631 .504 -1.143 1.125 -1.143h15.75"/><path d="M9 12v2"/><path d="M6 12v3"/><path d="M12 12v3"/><path d="M18 12v3"/><path d="M15 12v2"/><path d="M3 3v4"/><path d="M3 5h18"/><path d="M21 3v4"/></svg></span>দৈর্ঘ্য রূপান্তর</button><button data-m="vl"><span class="mi" style="background:linear-gradient(135deg,#4fd8e8,#13a6c4)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.502 19.423c2.602 2.105 6.395 2.105 8.996 0c2.602-2.105 3.262-5.708 1.566-8.546l-4.89-7.26c-.42-.625-1.287-.803-1.936-.397a1.376 1.376 0 0 0-.41.397l-4.893 7.26c-1.695 2.838-1.035 6.441 1.567 8.546z"/></svg></span>তরল রূপান্তর</button><button data-m="db"><span class="mi" style="background:linear-gradient(135deg,#7d8bff,#4a52e0)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6a8 3 0 1 0 16 0a8 3 0 1 0-16 0"/><path d="M4 6v6a8 3 0 0 0 16 0v-6"/><path d="M4 12v6a8 3 0 0 0 16 0v-6"/></svg></span>ডেটা রূপান্তর</button><button data-m="tm"><span class="mi" style="background:linear-gradient(135deg,#d99a5b,#9a6234)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 16 0a8 8 0 1 0-16 0"/><path d="M8.5 12a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0-7 0"/><path d="M12 12h.01"/></svg></span>কাঠের CFT হিসাব</button><button data-m="set"><span class="mi" style="background:linear-gradient(135deg,#a7acb8,#6b707c)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M4 6l8 0"/><path d="M16 6l4 0"/><path d="M8 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M4 12l2 0"/><path d="M10 12l10 0"/><path d="M17 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M4 18l11 0"/><path d="M19 18l1 0"/></svg></span>সেটিংস</button><button data-m="about"><span class="mi" style="background:linear-gradient(135deg,#8fb3c9,#4f7791)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0-18 0"/><path d="M12 9h.01"/><path d="M11 12h1v4h1"/></svg></span>অ্যাবাউট</button></div>');
 $("main").insertAdjacentHTML("afterend",'<div class="hhandle" id="hhandle"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></div>');
 var histT=null,undoT=null,undoData=null,emIdx=-1,lpT=null,lpX=0,lpY=0,lpFired=false;
 toggleHist=function(){
@@ -1485,11 +1506,11 @@ function histFade(){var h=$("hist");if(!h||h.hidden)return;
  h.style.setProperty("--ft",(hd?(hid?0:hd.offsetHeight)+(gl?gl.offsetHeight:0):0)+"px");
  h.style.setProperty("--ta",(hd&&st>2)?0:1);
  h.style.setProperty("--ba",st<mx-2?0:1);chipUpd()}
-function chipUpd(){var h=document.getElementById("hist"),c=h&&h.querySelector(".hchip"),hd=h&&h.querySelector(".hhd");if(!c||!hd)return;
- var bt=hd.getBoundingClientRect().bottom,gs=h.querySelectorAll(".hgrp"),t="";
- for(var i=0;i<gs.length;i++){if(gs[i].getBoundingClientRect().bottom>bt+2){var g=gs[i].querySelector(".hgl");if(g&&g.getBoundingClientRect().top<bt-2)t=g.dataset.l||"";break}}
- t=t.replace(/\s*[0-9০-৯]{4}$/,"");
- if(t){c.textContent=conv(t);c.hidden=false}else c.hidden=true}
+function chipUpd(){var h=document.getElementById("hist"),d=h&&h.querySelector(".hdt"),hd=h&&h.querySelector(".hhd");if(!d||!hd)return;
+ var bt=hd.getBoundingClientRect().bottom,gs=h.querySelectorAll(".hgrp"),t="",gid=null;
+ for(var i=0;i<gs.length;i++){if(gs[i].getBoundingClientRect().bottom>bt+2){var g=gs[i].querySelector(".hgl");if(g&&g.getBoundingClientRect().top<bt-2){t=g.dataset.l||"";gid=g.dataset.g}break}}
+ var l=d.querySelector(".hdl");if(l)l.textContent=t?conv(t):"";
+ if(t&&gid!==null){d.dataset.g=gid;if(selMode){var st=grpSt(gid);d.classList.toggle("sel",st.sel);d.classList.toggle("part",st.part)}}else{delete d.dataset.g;d.classList.remove("sel","part")}}
 function hdrAuto(){histFade()}
 var _rh2=renderHist;renderHist=function(){_rh2();var h=$("hist");if(h){h.classList.remove("hh");hLast=h.scrollTop;hAcc=0}histFade()};
 $("hist").addEventListener("scroll",hdrAuto,{passive:true});
