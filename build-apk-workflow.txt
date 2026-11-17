@@ -19,7 +19,7 @@ jobs:
           java-version: 17
       - run: npm install
       - run: npx cap add android
-      - run: npx capacitor-assets generate --android --iconBackgroundColor '#16171a' --iconBackgroundColorDark '#16171a' --splashBackgroundColor '#ffffff' --splashBackgroundColorDark '#ffffff'
+      - run: npx capacitor-assets generate --android --iconBackgroundColor '#16171a' --iconBackgroundColorDark '#16171a' --splashBackgroundColor '#16171a' --splashBackgroundColorDark '#16171a'
       - name: Install custom icons
         run: |
           find android/app/src/main/res -name 'ic_launcher*.webp' -delete
