@@ -19,7 +19,7 @@ jobs:
           java-version: 17
       - run: npm install
       - run: npx cap add android
-      - run: npx capacitor-assets generate --android --iconBackgroundColor '#16171a' --iconBackgroundColorDark '#16171a' --splashBackgroundColor '#16171a' --splashBackgroundColorDark '#16171a'
+      - run: npx capacitor-assets generate --android --iconBackgroundColor '#16171a' --iconBackgroundColorDark '#16171a' --splashBackgroundColor '#ffffff' --splashBackgroundColorDark '#ffffff'
       - name: Install custom icons
         run: |
           find android/app/src/main/res -name 'ic_launcher*.webp' -delete
@@ -28,6 +28,8 @@ jobs:
         run: |
           sed -i 's/#3F51B5/#16171A/g; s/#303F9F/#16171A/g' android/app/src/main/res/values/colors.xml || true
           sed -i 's/android:configChanges/android:screenOrientation="portrait" android:configChanges/' android/app/src/main/AndroidManifest.xml || true
+      - name: White native splash (Android 12+)
+        run: python3 scripts/white_splash.py
       - name: Compute version automatically
         run: |
           # Builds up to v10 were shown as 1.2. Build number 11 becomes 1.6, 12 becomes 1.7, and so on.

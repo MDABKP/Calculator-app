@@ -3,6 +3,6 @@
   "appName": "Calculator",
   "webDir": "www",
   "android": {
-    "backgroundColor": "#16171a"
+    "backgroundColor": "#ffffff"
   }
 }
