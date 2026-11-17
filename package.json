@@ -11,8 +11,5 @@
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "^6.1.2"
-  },
-  "scripts": {
-    "capacitor:sync:after": "python3 scripts/white_splash.py"
   }
 }
