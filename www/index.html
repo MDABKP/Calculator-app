@@ -617,6 +617,46 @@ button.hico:active{filter:brightness(.88);transform:scale(.94)}
 .hdt.sel .hgk::after{content:"";position:absolute;left:4px;top:0;width:4px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
 .hdt.part .hgk{border-color:var(--acc)}
 .hdt.part .hgk::after{content:"";position:absolute;left:3px;right:3px;top:5px;height:2px;background:var(--acc)}
+/* v37: স্পষ্ট লেবেল ও মুছুন বোতাম */
+.cfg label{font-size:14px;font-weight:600;color:var(--txt);color:color-mix(in srgb,var(--txt) 88%,transparent)}
+.cfg input::placeholder{color:var(--dim);opacity:1}
+.cfrh{font-size:15px;font-weight:600;color:var(--txt);color:color-mix(in srgb,var(--txt) 85%,transparent)}
+.cfhint,.clstat,.tmextra{font-size:14px;color:var(--txt);color:color-mix(in srgb,var(--txt) 82%,transparent)}
+.clrp{color:var(--txt);color:color-mix(in srgb,var(--txt) 88%,transparent)}
+.clpair span{color:var(--txt);color:color-mix(in srgb,var(--txt) 88%,transparent);font-weight:600}
+.af{color:var(--txt);color:color-mix(in srgb,var(--txt) 85%,transparent)}
+.cfclr{align-self:stretch;min-height:48px;margin-top:2px;background:transparent;color:#ef4d3a;color:color-mix(in srgb,#ef4d3a 80%,var(--txt));border:1.5px solid #ef4d3a;border-radius:14px;font-size:16px;font-weight:600;font-family:inherit;padding:10px 18px}
+.cfclr:active{background:rgba(239,77,58,.15)}
+.cfclr.arm{background:#e8432e;border-color:#e8432e;color:#fff}
+/* v38: একক ছোট ও ইনপুট নিচের সারিতে আটকানো */
+.cfg label{justify-content:flex-end}
+.cfg label .lt small{font-size:11px;font-weight:400}
+/* v39: কাঠের ট্যাব, স্পষ্ট ঘর */
+.cftabs button{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:54px;font-size:17px;font-weight:600}
+.cftabs button small{min-height:0;font-size:12px;font-weight:400}
+.cftabs button small:empty{display:none}
+.cfg label{font-size:15px}
+.cfg label .lt small{font-size:12px}
+.cfg input{border:1.5px solid var(--line);border:1.5px solid color-mix(in srgb,var(--txt) 32%,transparent);font-size:18px}
+.cfg input::placeholder{opacity:.8}
+/* v40: লেবেল সবসময় দুই লাইনে (নাম ওপরে, একক নিচে) */
+.cfg label{justify-content:flex-start}
+.cfg label .lt{display:block;line-height:1.25}
+.cfg label .lt small{display:block;font-size:12px;font-weight:400;line-height:15px;height:15px;white-space:nowrap}
+.cfg.g1 label .lt small{display:inline;height:auto;margin-left:4px}
+.cfg.g1 label .lt small.bl{display:none}
+/* v41: মাপের ঘর ও লেবেল মাঝামাঝি; অন্য মেনুর ঘর স্পষ্ট */
+.cfg.g4 label .lt,.cfg.g3 label .lt,.cfg.g4c label .lt,.cfg.g3c label .lt{text-align:center}
+.cfg label .lt small.u{display:inline;height:auto;font-size:13px;white-space:nowrap}
+.af input,.dt select,.dt input,.wsel,.tmhms input{border:1.5px solid var(--line);border:1.5px solid color-mix(in srgb,var(--txt) 32%,transparent)}
+.wsel{font-size:18px}
+.cfg.g4c small.bl,.cfg.g3c small.bl{display:none}
+/* v42: বয়সের ট্যাব — আলাদা বোতাম, ধূসর কন্টেইনার নেই */
+.atabs{background:transparent;padding:0;gap:6px;border-radius:0}
+.atabs button{min-width:0;min-height:48px;border:0;background:var(--key);color:var(--txt);padding:8px 10px;border-radius:12px;line-height:1.25;font-family:inherit;white-space:nowrap}
+.atabs button[data-am=diff]{flex:1.35}
+.atabs button.on{background:var(--acc);color:#fff}
+@media (max-width:340px){.atabs button{font-size:14px;padding:8px 8px}}
 </style>
 </head>
 <body>
@@ -1160,12 +1200,12 @@ dbLabels();
 
 
 /* ===== কাঠের CFT হিসাব ===== */
-var CFK="calc_cft",cf={tab:"c",cu:"ft",ru:"ft",c:[{l:"",w:"",t:"",n:""}],r:[{l:"",g:"",n:""}],cr:"",rr:"",bad:""},cfOut="",cfHE="",cfHR="",cfRst=0,cfRstT=null;
+var CFK="calc_cft",cf={tab:"c",cu:"ft",ru:"ft",c:[{l:"",w:"",t:"",n:"",p:""}],r:[{l:"",g:"",n:"",p:""}],cr:"",rr:"",bad:""},cfOut="",cfHE="",cfHR="",cfRst=0,cfRstT=null;
 function cfRows(a,keys){if(!Array.isArray(a)||!a.length)return null;return a.slice(0,60).map(function(o){var x={};keys.forEach(function(k){x[k]=(o&&typeof o[k]==="string")?o[k].slice(0,20):""});return x})}
 (function(){try{var v=JSON.parse(load(CFK)||"null");if(v&&typeof v==="object"){
  if(v.tab==="r")cf.tab="r";if(v.cu==="hat")cf.cu="hat";if(v.ru==="hat")cf.ru="hat";
  ["cr","rr","bad"].forEach(function(k){if(typeof v[k]==="string")cf[k]=v[k].slice(0,20)});
- var c=cfRows(v.c,["l","w","t","n"]),r=cfRows(v.r,["l","g","n"]);if(c)cf.c=c;if(r)cf.r=r}}catch(e){}})();
+ var c=cfRows(v.c,["l","w","t","n","p"]),r=cfRows(v.r,["l","g","n","p"]);if(c)cf.c=c;if(r)cf.r=r}}catch(e){}})();
 (function(){var p=document.createElement("div");p.className="tmpanel";p.id="tm";
  p.innerHTML='<div class="ahead"><button class="aback" id="tmback" aria-label="ক্যালকুলেটর"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><div class="atitle">কাঠের হিসাব (CFT)</div></div><div class="cltabs cftabs" id="cftabs"><button data-ctab="c">চিরাই কাঠ<small data-ts="c"></small></button><button data-ctab="r">গোল কাঠ<small data-ts="r"></small></button></div><div id="cfbody"></div>';
  $("app").appendChild(p)})();
@@ -1176,35 +1216,42 @@ function cfLf(u){return u==="hat"?1.5:1}
 function cfF(x,d){var p=Math.pow(10,d),v=Math.round(x*p)/p,t=v.toFixed(d).replace(/\.?0+$/,"");return conv(fmtNum(t))}
 function cfRowC(r,u){var l=cfPn(r.l),w=cfPn(r.w),t=cfPn(r.t),n=cfNn(r.n);if(!(l>0&&w>0&&t>0&&n>0))return null;return l*cfLf(u)*w*t/144*n}
 function cfRowR(r,u,bad){var l=cfPn(r.l),g=cfPn(r.g),b=cfPn(bad),n=cfNn(r.n);if(isNaN(b))b=0;g=g-b;if(!(l>0&&g>0&&n>0))return null;var q=g/4;return q*q*l*cfLf(u)/144*n}
-function cfIn(s,i,f,lab,val,mode){return '<label>'+lab+'<input type="text" inputmode="'+(mode==="i"?"numeric":"decimal")+'" autocomplete="off" data-n="'+mode+'" data-s="'+s+'" data-i="'+i+'" data-f="'+f+'"'+(f==="n"?' placeholder="'+conv("1")+'"':'')+' value="'+cfEsc(conv(toEn(val)))+'"></label>'}
-function cfTop(k,lab,val){return '<label>'+lab+'<input type="text" inputmode="decimal" autocomplete="off" data-n="d" data-t="'+k+'" value="'+cfEsc(conv(toEn(val)))+'"></label>'}
+function lbl(t,inl){var m=/^(.*?)\s*(\([^)]*\))$/.exec(t);return '<span class="lt">'+(m?(inl?m[1]+' <small class="u">'+m[2]+'</small><small class="bl">&#8203;</small>':m[1]+'<small>'+m[2]+'</small>'):t+'<small class="bl">&#8203;</small>')+'</span>'}
+function cfIn(s,i,f,lab,val,mode){return '<label>'+lbl(lab)+'<input type="text" inputmode="'+(mode==="i"?"numeric":"decimal")+'" autocomplete="off" data-n="'+mode+'" data-s="'+s+'" data-i="'+i+'" data-f="'+f+'"'+(f==="n"?' placeholder="'+conv("1")+'"':'')+' value="'+cfEsc(conv(toEn(val)))+'"></label>'}
+function cfTop(k,lab,val){return '<label>'+lbl(lab)+'<input type="text" inputmode="decimal" autocomplete="off" data-n="d" data-t="'+k+'" value="'+cfEsc(conv(toEn(val)))+'"></label>'}
 function cfRow(s,i,row){
- var inp=s==="c"?cfIn("c",i,"l","দৈর্ঘ্য",row.l,"d")+cfIn("c",i,"w","প্রস্থ (ইঞ্চি)",row.w,"d")+cfIn("c",i,"t","পুরুত্ব (ইঞ্চি)",row.t,"d")+cfIn("c",i,"n","পিস",row.n,"i")
-  :cfIn("r",i,"l","দৈর্ঘ্য",row.l,"d")+cfIn("r",i,"g","বেড় (ইঞ্চি)",row.g,"d")+cfIn("r",i,"n","পিস",row.n,"i");
- return '<div class="cfr"><div class="cfrh"><span>'+conv(i+1)+' নং</span><span class="cfrv" data-rv="'+s+':'+i+'"></span><button class="cfdel" data-cdel="'+s+':'+i+'" aria-label="সারি মুছুন">'+TRASH+'</button></div><div class="cfg '+(s==="c"?"g4":"g3")+'">'+inp+'</div></div>'}
+ var ul=(s==="c"?cf.cu:cf.ru)==="hat"?"হাত":"ফুট",LL="দৈর্ঘ্য ("+ul+")",
+ inp=s==="c"?cfIn("c",i,"l",LL,row.l,"d")+cfIn("c",i,"w","প্রস্থ (ইঞ্চি)",row.w,"d")+cfIn("c",i,"t","পুরুত্ব (ইঞ্চি)",row.t,"d")+cfIn("c",i,"n","পিস",row.n,"i")
+  :cfIn("r",i,"l",LL,row.l,"d")+cfIn("r",i,"g","বেড় (ইঞ্চি)",row.g,"d")+cfIn("r",i,"n","পিস",row.n,"i");
+ return '<div class="cfr"><div class="cfrh"><span>'+conv(i+1)+' নং</span><span class="cfrv" data-rv="'+s+':'+i+'"></span><button class="cfdel" data-cdel="'+s+':'+i+'" aria-label="সারি মুছুন">'+TRASH+'</button></div><div class="cfg '+(s==="c"?"g4":"g3")+'">'+inp+'</div><div class="cfg g1">'+cfIn(s,i,"p","দর (৳/CFT)",row.p,"d")+'</div><div class="clrp" data-rp="'+s+':'+i+'"></div></div>'}
 function cfSec(s){
  var c=s==="c",u=c?cf.cu:cf.ru,rows=(c?cf.c:cf.r).map(function(r,i){return cfRow(s,i,r)}).join("");
  return '<div class="cfc"><div class="cfh"><b>'+(c?"চিরাই কাঠ":"গোল কাঠ")+'</b><div class="cfu"><button data-cu="'+s+':ft"'+(u==="ft"?' class="on"':'')+'>ফুট</button><button data-cu="'+s+':hat"'+(u==="hat"?' class="on"':'')+'>হাত</button></div></div>'+
  '<div class="cfhint">'+conv(c?"দৈর্ঘ্য × প্রস্থ × পুরুত্ব ÷ 144":"(বেড় ÷ 4)² × দৈর্ঘ্য ÷ 144")+'<br>দৈর্ঘ্য ফুট বা হাতে (১ হাত = ১.৫ ফুট)</div>'+rows+
  '<button class="cfadd" data-cadd="'+s+'">+ আরেকটা যোগ করুন</button>'+
- '<div class="cfg '+(c?"g1":"g2")+'">'+(c?"":cfTop("bad","ছাল বাদ (ইঞ্চি)",cf.bad))+cfTop(c?"cr":"rr","প্রতি CFT দর (৳)",c?cf.cr:cf.rr)+'</div>'+
+ '<div class="cfg '+(c?"g1":"g2")+'">'+(c?"":cfTop("bad","ছাল বাদ (ইঞ্চি)",cf.bad))+cfTop(c?"cr":"rr","সব সারির দর (৳/CFT)",c?cf.cr:cf.rr)+'</div><div class="cfhint">সারিতে আলাদা দর না দিলে এই দরটা ধরা হবে</div>'+
  '<div class="cfs" data-sub="'+s+'"></div></div>'}
 function cfRender(){var tb=$("cftabs").children;for(var k=0;k<tb.length;k++)tb[k].classList.toggle("on",tb[k].dataset.ctab===cf.tab);
  $("cfbody").innerHTML=cfSec(cf.tab)+'<div class="ares cfres" id="cfres" hidden></div><button class="cfclr" data-act="cfreset">সব মুছুন</button>';cfUpdate()}
 function cfUnit(u){return u==="hat"?"হাত":"ফুট"}
 function cfUpdate(){
- var R={c:{cft:0,n:0,rows:[]},r:{cft:0,n:0,rows:[]}};
+ var R={c:{cft:0,n:0,rows:[],rr:[],pr:[]},r:{cft:0,n:0,rows:[],rr:[],pr:[]}};
  cf.c.forEach(function(r,i){var x=cfRowC(r,cf.cu);R.c.rows[i]=x;if(x!==null){R.c.cft+=x;R.c.n++}});
  cf.r.forEach(function(r,i){var x=cfRowR(r,cf.ru,cf.bad);R.r.rows[i]=x;if(x!==null){R.r.cft+=x;R.r.n++}});
  var price=0,T=["চিরাই কাঠ (CFT হিসাব)"],lines=[];
  ["c","r"].forEach(function(s){
   var c=s==="c",rate=cfPn(c?cf.cr:cf.rr),u=c?cf.cu:cf.ru,rows=c?cf.c:cf.r;
-  R[s].rows.forEach(function(x,i){var el=document.querySelector('[data-rv="'+s+':'+i+'"]');if(el)el.textContent=x===null?"":"= "+cfF(x,2)+" CFT"});
+  var sp=0,gph=rate>0?conv(toEn(c?cf.cr:cf.rr)):"";
+  [].forEach.call(document.querySelectorAll('[data-s="'+s+'"][data-f="p"]'),function(el){el.placeholder=gph});
+  R[s].rows.forEach(function(x,i){var el=document.querySelector('[data-rv="'+s+':'+i+'"]'),pe=document.querySelector('[data-rp="'+s+':'+i+'"]');if(el)el.textContent=x===null?"":"= "+cfF(x,2)+" CFT";
+   var rr=0,pr=0;if(x!==null){rr=cfPn(rows[i].p);if(!(rr>0))rr=rate>0?rate:0;if(rr>0){pr=x*rr;sp+=pr}}
+   R[s].rr[i]=rr;R[s].pr[i]=pr;
+   if(pe)pe.innerHTML=(x!==null&&rr>0)?'<span>দাম (৳ '+cfF(rr,2)+' প্রতি CFT)</span><span>৳ '+cfF(pr,2)+'</span>':""});
   var sb=document.querySelector('[data-sub="'+s+'"]'),ts=document.querySelector('[data-ts="'+s+'"]');
   if(ts)ts.textContent=R[s].n?cfF(R[s].cft,2)+" CFT":"";
-  if(R[s].n){var sp=rate>0?R[s].cft*rate:0;price+=sp;
-   if(sb)sb.innerHTML='<span>মোট</span><span>'+cfF(R[s].cft,2)+' CFT'+(rate>0?' • ৳ '+cfF(sp,2):'')+'</span>';
-   lines.push((c?"চিরাই কাঠ":"গোল কাঠ")+": "+cfF(R[s].cft,2)+" CFT"+(rate>0?" × ৳ "+cfF(rate,2)+" = ৳ "+cfF(sp,2):""));
+  if(R[s].n){price+=sp;
+   if(sb)sb.innerHTML='<span>মোট</span><span>'+cfF(R[s].cft,2)+' CFT'+(sp>0?' • ৳ '+cfF(sp,2):'')+'</span>';
+   lines.push((c?"চিরাই কাঠ":"গোল কাঠ")+": "+cfF(R[s].cft,2)+" CFT"+(sp>0?" = ৳ "+cfF(sp,2):""));
   }else if(sb)sb.innerHTML="";
  });
  var box=$("cfres"),tot=R.c.cft+R.r.cft,any=R.c.n+R.r.n>0;
@@ -1216,7 +1263,7 @@ function cfUpdate(){
   out.push("",c?"চিরাই কাঠ:":"গোল কাঠ:");var k=0;
   rows.forEach(function(r,i){var x=R[s].rows[i];if(x===null)return;k++;
    var n=String(r.n).trim()===""?"1":r.n,d=conv(toEn(r.l))+" "+cfUnit(u)+" × "+(c?conv(toEn(r.w))+" ইঞ্চি × "+conv(toEn(r.t))+" ইঞ্চি":conv(toEn(r.g))+" ইঞ্চি বেড়")+" × "+conv(toEn(n))+" পিস";
-   out.push(conv(k)+") "+d+" = "+cfF(x,2)+" CFT")});
+   out.push(conv(k)+") "+d+" = "+cfF(x,2)+" CFT"+(R[s].rr[i]>0?", দর ৳ "+cfF(R[s].rr[i],2)+" = ৳ "+cfF(R[s].pr[i],2):""))});
   if(!c&&cfPn(cf.bad)>0)out.push("(ছাল বাদ "+conv(toEn(cf.bad))+" ইঞ্চি)");
  });
  out.push("");
@@ -1244,17 +1291,17 @@ $("tm").addEventListener("click",function(e){var t=e.target,b;
  if((b=t.closest("[data-ctab]"))){cf.tab=b.dataset.ctab;cfSave();cfRender();$("tm").scrollTop=0;return}
  if((b=t.closest("[data-cu]"))){var p=b.dataset.cu.split(":");cf[p[0]==="c"?"cu":"ru"]=p[1];cfSave();cfRender();return}
  if((b=t.closest("[data-cadd]"))){var s=b.dataset.cadd,a=cf[s];if(a.length>=60){toast("সর্বোচ্চ "+conv("60")+"টি সারি");return}
-  a.push(s==="c"?{l:"",w:"",t:"",n:""}:{l:"",g:"",n:""});cfSave();cfRender();
+  a.push(s==="c"?{l:"",w:"",t:"",n:"",p:""}:{l:"",g:"",n:"",p:""});cfSave();cfRender();
   var f=document.querySelector('[data-s="'+s+'"][data-i="'+(a.length-1)+'"][data-f="l"]');if(f)f.focus();return}
  if((b=t.closest("[data-cdel]"))){var q=b.dataset.cdel.split(":"),arr=cf[q[0]],i=+q[1];
-  if(arr.length>1)arr.splice(i,1);else arr[0]=q[0]==="c"?{l:"",w:"",t:"",n:""}:{l:"",g:"",n:""};cfSave();cfRender();return}
+  if(arr.length>1)arr.splice(i,1);else arr[0]=q[0]==="c"?{l:"",w:"",t:"",n:"",p:""}:{l:"",g:"",n:"",p:""};cfSave();cfRender();return}
  if((b=t.closest("[data-act]"))){var ac=b.dataset.act;
   if(ac==="cfcopy"&&cfOut)copyText(cfOut).then(function(ok){toast(ok?"কপি হয়েছে":"কপি করা যায়নি")});
   else if(ac==="cfshare"&&cfOut)shareText(cfOut);
   else if(ac==="cfsave"&&cfHR){addHist(cfHE,cfHR);toast("আগের হিসাবে সেভ হয়েছে")}
   else if(ac==="cfreset"){
-   if(!cfRst){cfRst=1;b.textContent="নিশ্চিত? আবার চাপুন";clearTimeout(cfRstT);cfRstT=setTimeout(function(){cfRst=0;var x=document.querySelector('[data-act="cfreset"]');if(x)x.textContent="সব মুছুন"},3000);return}
-   cfRst=0;clearTimeout(cfRstT);cf.c=[{l:"",w:"",t:"",n:""}];cf.r=[{l:"",g:"",n:""}];cf.cr="";cf.rr="";cf.bad="";cfSave();cfRender()}
+   if(!cfRst){cfRst=1;b.textContent="নিশ্চিত? আবার চাপুন";b.classList.add("arm");clearTimeout(cfRstT);cfRstT=setTimeout(function(){cfRst=0;var x=document.querySelector('[data-act="cfreset"]');if(x){x.textContent="সব মুছুন";x.classList.remove("arm")}},3000);return}
+   cfRst=0;clearTimeout(cfRstT);cf.c=[{l:"",w:"",t:"",n:"",p:""}];cf.r=[{l:"",g:"",n:"",p:""}];cf.cr="";cf.rr="";cf.bad="";cfSave();cfRender()}
  }});
 $("tmback").addEventListener("click",function(){$("app").classList.remove("tmmode")});
 document.addEventListener("click",function(e){if(e.target.closest("#menu [data-m=tm]"))$("app").classList.add("tmmode")});
@@ -1292,7 +1339,7 @@ function clRowTxt(x,t){return t===0?clTxt(x):t===1?clGTxt(x):cfF(x,2)+" ইঞ�
 function clSrc(row,t){var a=conv(toEn(row.a)),b=conv(toEn(row.b));
  if(t===0)return a+" ইঞ্চি";if(t===1)return a+" গিরা";
  var p=[];if(String(row.a).trim()!=="")p.push(a+" গজ");if(String(row.b).trim()!=="")p.push(b+" গিরা");return p.join(" ")}
-function clIn(i,f,lab,v,m){m=m||"d";return '<label>'+lab+'<input type="text" inputmode="'+(m==="i"?"numeric":"decimal")+'" autocomplete="off" data-n="'+m+'" data-ri="'+i+'" data-rf="'+f+'"'+(f==="q"?' placeholder="'+conv("1")+'"':'')+' value="'+cfEsc(conv(toEn(v)))+'"></label>'}
+function clIn(i,f,lab,v,m){m=m||"d";return '<label>'+lbl(lab,f==="p")+'<input type="text" inputmode="'+(m==="i"?"numeric":"decimal")+'" autocomplete="off" data-n="'+m+'" data-ri="'+i+'" data-rf="'+f+'"'+(f==="q"?' placeholder="'+conv("1")+'"':'')+' value="'+cfEsc(conv(toEn(v)))+'"></label>'}
 function clRow(i,row,t){
  var q=clIn(i,"q","পিস",row.q,"i"),rin=clIn(i,"p","দর (৳)",row.p),
  inp=t===2?'<div class="cfg g4c">'+clIn(i,"a","গজ",row.a)+clIn(i,"b","গিরা",row.b)+q+rin+'</div>':'<div class="cfg g3c">'+clIn(i,"a",t===0?"ইঞ্চি":"গিরা",row.a)+q+rin+'</div>';
@@ -1357,7 +1404,7 @@ $("cl").addEventListener("click",function(e){var t=e.target,b,D=cl.d[cl.t];
   else if(ac==="clshare"&&clOut)shareText(clOut);
   else if(ac==="clsave"&&clHR){addHist(clHE,clHR,clHX,clHU);toast("আগের হিসাবে সেভ হয়েছে")}
   else if(ac==="clreset"){
-   if(!clRst){clRst=1;b.textContent="নিশ্চিত? আবার চাপুন";clearTimeout(clRstT);clRstT=setTimeout(function(){clRst=0;var x=document.querySelector('[data-act="clreset"]');if(x)x.textContent="এই হিসাব মুছুন"},3000);return}
+   if(!clRst){clRst=1;b.textContent="নিশ্চিত? আবার চাপুন";b.classList.add("arm");clearTimeout(clRstT);clRstT=setTimeout(function(){clRst=0;var x=document.querySelector('[data-act="clreset"]');if(x){x.textContent="এই হিসাব মুছুন";x.classList.remove("arm")}},3000);return}
    clRst=0;clearTimeout(clRstT);D.r=[{a:"",b:"",p:"",q:""}];D.rate="";clSave();clRender()}
  }});
 $("clback").addEventListener("click",function(){$("app").classList.remove("clmode")});
