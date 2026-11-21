@@ -1351,7 +1351,7 @@ function clRender(){
  $("clbody").innerHTML='<div class="cfc"><div class="cfh"><b>'+CLT[t].title+'</b></div><div class="cfhint">'+conv(CLT[t].hint)+'</div>'+
  D.r.map(function(r,i){return clRow(i,r,t)}).join("")+
  '<button class="cfadd" data-cadd="1">+ আরেকটা যোগ করুন</button>'+
- '<div class="cfg g1"><label>সব পিসের দর (৳/গজ) — আলাদা না দিলে এটা ধরা হবে<input type="text" inputmode="decimal" autocomplete="off" data-n="d" data-rate="1" value="'+cfEsc(conv(toEn(D.rate)))+'"></label></div></div>'+
+ '<div class="cfg g1"><label>'+lbl("সব পিসের দর (৳/গজ)")+'<input type="text" inputmode="decimal" autocomplete="off" data-n="d" data-rate="1" value="'+cfEsc(conv(toEn(D.rate)))+'"></label></div><div class="cfhint">সারিতে আলাদা দর না দিলে এই দরটা ধরা হবে</div></div>'+
  '<div class="ares cfres" id="clres" hidden></div>'+
  '<button class="cfclr" data-act="clreset">এই হিসাব মুছুন</button>';
  clUpdate()}
